@@ -55,15 +55,15 @@ class Home extends StatelessWidget {
     );
   }
 
-  login() async {
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: userController.text, password: passwordController.text);
-      print('LogIn is Succesful');
-    } catch (e) {
-      print('log in failed with following error $e');
-    }
-  }
+  // login() async {
+  //   try {
+  //     await FirebaseAuth.instance.signInWithEmailAndPassword(
+  //         email: userController.text, password: passwordController.text);
+  //     print('LogIn is Succesful');
+  //   } catch (e) {
+  //     print('log in failed with following error $e');
+  //   }
+  // }
 
   signUp() async {
     try {
