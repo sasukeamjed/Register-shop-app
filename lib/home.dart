@@ -1,5 +1,7 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Home extends StatelessWidget {
@@ -7,8 +9,8 @@ class Home extends StatelessWidget {
 
   String username;
 
-  TextEditingController userController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +34,12 @@ class Home extends StatelessWidget {
             ),
             Text('Creat new user?!'),
             TextField(
-              controller: userController,
-              decoration: InputDecoration(labelText: 'UserName'),
+              controller: nameController,
+              decoration: InputDecoration(labelText: 'Name'),
             ),
             TextField(
-              controller: passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'Email'),
             ),
             SizedBox(
               height: 10.0,
@@ -47,7 +49,9 @@ class Home extends StatelessWidget {
             ),
             RaisedButton(
               child: Text('Add a new User ?!'),
-              onPressed: signUp,
+              onPressed: () {
+                fetchUserByEmail('sasukeamjed@gmail.com');
+              },
             ),
           ],
         ),
@@ -58,21 +62,55 @@ class Home extends StatelessWidget {
   // login() async {
   //   try {
   //     await FirebaseAuth.instance.signInWithEmailAndPassword(
-  //         email: userController.text, password: passwordController.text);
+  //         email: emailController.text, password: passwordController.text);
   //     print('LogIn is Succesful');
   //   } catch (e) {
   //     print('log in failed with following error $e');
   //   }
   // }
 
-  signUp() async {
-    try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: userController.text, password: passwordController.text);
-      print('Sign up is Succesful');
-    } catch (e) {
-      print('Sign up failed with following error $e');
-    }
+  addUser() async {
+    CloudFunctions.instance.getHttpsCallable(functionName: "addUser").call({
+      "name": nameController.text,
+      "email": emailController.text
+    }).then((res) {
+      print('Done creating a user');
+    }).catchError((e) {
+      print(e);
+    });
+    // try {
+    //   await FirebaseAuth.instance.createUserWithEmailAndPassword(
+    //       email: userController.text, password: passwordController.text);
+    //   print('Sign up is Succesful');
+    // } catch (e) {
+    //   print('Sign up failed with following error $e');
+    // }
+  }
+
+  fetchUserByUid(uid) async {
+    CloudFunctions.instance
+        .getHttpsCallable(functionName: "fetchUserByUid")
+        .call({
+      "uid": uid,
+    }).then((res) {
+      print(res.data);
+      print('Done getting a user');
+    }).catchError((e) {
+      print(e);
+    });
+  }
+
+  fetchUserByEmail(email) async{
+    CloudFunctions.instance
+        .getHttpsCallable(functionName: "fetchUserByEmail")
+        .call({
+      "email": email,
+    }).then((res) {
+      print(res.data);
+      print('Done getting a user');
+    }).catchError((e) {
+      print(e);
+    });
   }
 
   void signOut() async {
