@@ -50,7 +50,8 @@ class Home extends StatelessWidget {
             RaisedButton(
               child: Text('Add a new User ?!'),
               onPressed: () {
-                fetchUserByUid('1ZXgy5DtuaToQFwEv0gDicmjMPg2');
+//                fetchUserByUid('1ZXgy5DtuaToQFwEv0gDicmjMPg2');
+                fetchAllUsers();
               },
             ),
           ],
@@ -88,7 +89,7 @@ class Home extends StatelessWidget {
   }
 
   fetchUserByUid(uid) async {
-    print('fetching user');
+
     CloudFunctions.instance
         .getHttpsCallable(functionName: "fetchUserByUid")
         .call({"uid": uid}).then((res) {
@@ -96,6 +97,15 @@ class Home extends StatelessWidget {
           print('Done getting a user');
         }).catchError((e) {
           print(e);
+    });
+  }
+
+  fetchAllUsers() async{
+    CloudFunctions.instance.getHttpsCallable(functionName: 'getAllUsers').call().then((res){
+      print('function getAllUsers is called');
+      print(res.data);
+    }).catchError((e){
+      print(e);
     });
   }
 
