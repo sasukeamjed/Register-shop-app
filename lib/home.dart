@@ -50,7 +50,7 @@ class Home extends StatelessWidget {
             RaisedButton(
               child: Text('Add a new User ?!'),
               onPressed: () {
-                fetchUserByEmail('sasukeamjed@gmail.com');
+                fetchUserByUid('1ZXgy5DtuaToQFwEv0gDicmjMPg2');
               },
             ),
           ],
@@ -88,15 +88,14 @@ class Home extends StatelessWidget {
   }
 
   fetchUserByUid(uid) async {
+    print('fetching user');
     CloudFunctions.instance
         .getHttpsCallable(functionName: "fetchUserByUid")
-        .call({
-      "uid": uid,
-    }).then((res) {
-      print(res.data);
-      print('Done getting a user');
-    }).catchError((e) {
-      print(e);
+        .call({"uid": uid}).then((res) {
+          print(res.data['email']);
+          print('Done getting a user');
+        }).catchError((e) {
+          print(e);
     });
   }
 
