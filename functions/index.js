@@ -55,6 +55,20 @@ exports.getAllUsers = functions.https.onCall((data, context)=>{
     return listAllUsers();
 });
 
+exports.addTheAdmin = functions.https.onCall((data, context)=>{
+  const email = data['email'];
+  return addAdminRole(email).then(()=>{
+    console.log('Admin Role Is Added');
+  });
+});
+
+const addAdminRole = async (email)=>{
+  const user = await admin.auth().getUserByEmail(email);
+  return admin.auth().setCustomUserClaims(user.uid, {
+    admin: true,
+  });
+};
+
 exports.fetchUserByEmail = functions.https.onCall((data, context)=>{
     admin.auth().getUserByEmail('admin@admin.com')
        .then(function(userRecord) {

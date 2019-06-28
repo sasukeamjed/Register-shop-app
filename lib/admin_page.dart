@@ -51,7 +51,7 @@ class Home extends StatelessWidget {
               child: Text('Add a new User ?!'),
               onPressed: () {
 //                fetchUserByUid('1ZXgy5DtuaToQFwEv0gDicmjMPg2');
-                fetchAllUsers();
+                addAdminRole('test@test.com');
               },
             ),
           ],
@@ -104,6 +104,16 @@ class Home extends StatelessWidget {
     CloudFunctions.instance.getHttpsCallable(functionName: 'getAllUsers').call().then((res){
       print('function getAllUsers is called');
       print(res.data);
+    }).catchError((e){
+      print(e);
+    });
+  }
+
+  addAdminRole(email) async{
+    CloudFunctions.instance.getHttpsCallable(functionName: 'addTheAdmin').call({
+      "email": email
+    }).then((res){
+      print('Addmin Roles is Added');
     }).catchError((e){
       print(e);
     });

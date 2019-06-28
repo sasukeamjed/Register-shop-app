@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'home.dart';
+import 'admin_page.dart';
 import 'login_page.dart';
+import 'parse_jwt.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,15 +17,24 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: StreamBuilder<FirebaseUser>(
+      home: StreamBuilder<FirebaseUser> (
         stream: FirebaseAuth.instance.onAuthStateChanged,
-        builder: (BuildContext context, snapshot){
+        builder: (BuildContext context, user) {
           print('AuthState is changed');
-          if(snapshot.hasData){
-            return Home(snapshot.data.email);
-          }else{
-            return LoginPage();
-          }
+          String userToken;
+          user.data.getIdToken().then((token){
+            userToken = token;
+            print(userToken);
+            if(user.hasData){
+              return Home(user.data.email);
+            }else{
+              return LoginPage();
+            }
+          }).catchError((e){
+            print(e);
+          });
+
+
         },
       ),
     );
