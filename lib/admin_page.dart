@@ -4,23 +4,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:provider/provider.dart';
+
+import 'db/db_class.dart';
+
+import 'parse_jwt.dart';
+
 class Home extends StatelessWidget {
-  Home(this.username);
 
-  String username;
-
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    var db = Provider.of<Db>(context);
+    print(parseJwt(db.userInstance.idToken));
     return Scaffold(
       appBar: AppBar(
-        title: Text(username),
+        title: Text(db.userInstance.email),
         leading: IconButton(
           icon: Icon(Icons.exit_to_app),
-          onPressed: () {
-            signOut();
+          onPressed: () async {
+            await db.signOut();
           },
         ),
       ),

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
-class LoginPage extends StatefulWidget {
+import 'db/db_class.dart';
 
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPage extends StatelessWidget {
 
   TextEditingController userController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -15,6 +13,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    var db = Provider.of<Db>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Main App'),
@@ -45,14 +44,18 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   RaisedButton(
                     child: Text('LogIn'),
-                    onPressed: login,
+                    onPressed: () async{
+                      await db.login(userController.text, passwordController.text);
+                    },
                   ),
                   SizedBox(
                     width: 10.0,
                   ),
                   RaisedButton(
                     child: Text('Sign Up'),
-                    onPressed: signUp,
+                    onPressed: () async {
+                      await db.signUp(userController.text, passwordController.text);
+                    },
                   ),
                 ],
               ),
@@ -63,23 +66,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  login()async{
-    try{
-      await FirebaseAuth.instance.signInWithEmailAndPassword(email: userController.text, password: passwordController.text);
-      print('LogIn is Succesful');
-    }catch(e){
-      print('log in failed with following error $e');
-    }
-  }
 
-  signUp()async{
-    try{
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: userController.text, password: passwordController.text);
-      print('Sign up is Succesful');
-    }catch(e){
-      print('Sign up failed with following error $e');
-    }
-  }
 
 
 }
