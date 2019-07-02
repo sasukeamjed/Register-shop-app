@@ -6,6 +6,7 @@ import 'db/db_class.dart';
 import 'admin_page.dart';
 import 'login_page.dart';
 import 'parse_jwt.dart';
+import 'home_page.dart';
 
 import 'models/user_model.dart';
 
@@ -48,7 +49,7 @@ class AuthPage extends StatelessWidget {
         future: db.create(authUser),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.done){
-            return Home();
+            return parseJwt(db.userInstance.idToken).containsKey('admin') ? AdminPage() : Home();
           }
           else{
             return CircularProgressIndicator();

@@ -5,9 +5,9 @@ import 'dart:async';
 
 class Db with ChangeNotifier {
   User _userInstance;
+  String _claimType;
 
   get userInstance => _userInstance;
-
 
   Future<void> login(email, password)async{
     try{

@@ -10,7 +10,7 @@ import 'db/db_class.dart';
 
 import 'parse_jwt.dart';
 
-class Home extends StatelessWidget {
+class AdminPage extends StatelessWidget {
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -18,7 +18,6 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var db = Provider.of<Db>(context);
-    print(parseJwt(db.userInstance.idToken));
     return Scaffold(
       appBar: AppBar(
         title: Text(db.userInstance.email),
