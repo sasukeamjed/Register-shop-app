@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:provider/provider.dart';
 
 import 'db/db_class.dart';
-
+import 'widgets/admin_page_widgets.dart';
 import 'parse_jwt.dart';
 
 class AdminPage extends StatelessWidget {
@@ -51,11 +50,12 @@ class AdminPage extends StatelessWidget {
             SizedBox(
               width: 10.0,
             ),
+            ClaimRadioButtons(),
             RaisedButton(
               child: Text('Add a new User ?!'),
-              onPressed: () {
+              onPressed: () async{
 //                fetchUserByUid('1ZXgy5DtuaToQFwEv0gDicmjMPg2');
-                addAdminRole('test@test.com');
+                await addUser(db.claim);
               },
             ),
           ],
@@ -74,12 +74,13 @@ class AdminPage extends StatelessWidget {
   //   }
   // }
 
-  addUser() async {
+  addUser(claim) async {
     CloudFunctions.instance.getHttpsCallable(functionName: "addUser").call({
       "name": nameController.text,
       "email": emailController.text
     }).then((res) {
       print('Done creating a user');
+      addAdminRole(emailController.text, claim);
     }).catchError((e) {
       print(e);
     });
@@ -113,9 +114,10 @@ class AdminPage extends StatelessWidget {
     });
   }
 
-  addAdminRole(email) async{
+  addAdminRole(email, claim) async{
     CloudFunctions.instance.getHttpsCallable(functionName: 'addTheAdmin').call({
-      "email": email
+      "email": email,
+      "claim": claim
     }).then((res){
       print('Addmin Roles is Added');
     }).catchError((e){

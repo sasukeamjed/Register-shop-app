@@ -5,9 +5,12 @@ import 'dart:async';
 
 class Db with ChangeNotifier {
   User _userInstance;
-  String _claimType;
+  String _userClaim = '';
 
   get userInstance => _userInstance;
+  get claim => _userClaim;
+
+  setClaim(value){ _userClaim = value;}
 
   Future<void> login(email, password)async{
     try{
@@ -47,9 +50,11 @@ class Db with ChangeNotifier {
           id: user.uid,
           idToken: await user.getIdToken(),
           email: user.email,
-          name: user.displayName
+          name: user.displayName,
+        claimType: _userClaim
       );
 
   }
+
 }
 
