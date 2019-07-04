@@ -11,7 +11,7 @@ import 'parse_jwt.dart';
 
 class AdminPage extends StatelessWidget {
 
-  final TextEditingController nameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
 
   @override
@@ -27,39 +27,41 @@ class AdminPage extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'This is Home Page',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text('Creat new user?!'),
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: 'Name'),
-            ),
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            SizedBox(
-              width: 10.0,
-            ),
-            ClaimRadioButtons(),
-            RaisedButton(
-              child: Text('Add a new User ?!'),
-              onPressed: () async{
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'This is Home Page',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text('Creat new user?!'),
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(labelText: 'Email'),
+              ),
+              TextField(
+                controller: passwordController,
+                decoration: InputDecoration(labelText: 'Password'),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              SizedBox(
+                width: 10.0,
+              ),
+              ClaimRadioButtons(),
+              RaisedButton(
+                child: Text('Add a new User ?!'),
+                onPressed: () async{
 //                fetchUserByUid('1ZXgy5DtuaToQFwEv0gDicmjMPg2');
 //                await addUser(db.claim);
-                await createUser();
-              },
-            ),
-          ],
+                  await createUser(db.claim);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -77,8 +79,8 @@ class AdminPage extends StatelessWidget {
 
   addUser(claim) async {
     CloudFunctions.instance.getHttpsCallable(functionName: "addUser").call({
-      "name": nameController.text,
-      "email": emailController.text
+      "email": emailController.text,
+      "password": emailController.text
     }).then((res) {
       print('Done creating a user');
       addAdminRole(emailController.text, claim);
@@ -94,9 +96,15 @@ class AdminPage extends StatelessWidget {
     // }
   }
 
-  createUser() async{
-    CloudFunctions.instance.getHttpsCallable(functionName: "createUser").call().then((res){
-      print('User created successfuly: ' + res.data);
+  createUser(claim) async{
+    CloudFunctions.instance.getHttpsCallable(functionName: "createUser").call(
+      {
+        "email": emailController.text,
+        "password": passwordController.text,
+        "claim" : claim
+      }
+    ).then((res){
+      print(res.data);
     }).catchError((e){
       print(e);
     });
