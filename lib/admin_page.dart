@@ -55,7 +55,8 @@ class AdminPage extends StatelessWidget {
               child: Text('Add a new User ?!'),
               onPressed: () async{
 //                fetchUserByUid('1ZXgy5DtuaToQFwEv0gDicmjMPg2');
-                await addUser(db.claim);
+//                await addUser(db.claim);
+                await createUser();
               },
             ),
           ],
@@ -93,6 +94,14 @@ class AdminPage extends StatelessWidget {
     // }
   }
 
+  createUser() async{
+    CloudFunctions.instance.getHttpsCallable(functionName: "createUser").call().then((res){
+      print('User created successfuly: ' + res.data);
+    }).catchError((e){
+      print(e);
+    });
+  }
+
   fetchUserByUid(uid) async {
 
     CloudFunctions.instance
@@ -108,7 +117,7 @@ class AdminPage extends StatelessWidget {
   fetchAllUsers() async{
     CloudFunctions.instance.getHttpsCallable(functionName: 'getAllUsers').call().then((res){
       print('function getAllUsers is called');
-      print(res.data);
+      print(res);
     }).catchError((e){
       print(e);
     });

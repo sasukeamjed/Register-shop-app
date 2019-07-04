@@ -19,7 +19,21 @@ exports.addUser = functions.https.onCall((data, context) => {
   });
 });
 
-
+exports.createUser = functions.https.onCall((data, context)=>{
+  return admin.auth().createUser({
+    email: 'createuser5@user.com',
+    emailVerified: false,
+    password: '123456',
+    displayName: 'Amjed Al anqoodi',
+    photoURL: 'http://www.example.com/12345678/photo.png',
+    disabled: false
+  }).then((userRecord)=>{
+    console.log('Successfully created new user:', userRecord.uid);
+    return userRecord;
+  }).catch((error)=>{
+    console.log('Error creating new user:', error);
+  });
+});
 
 exports.fetchUserByUid = functions.https.onCall((data, context) => {
 
