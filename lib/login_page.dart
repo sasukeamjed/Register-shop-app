@@ -7,8 +7,8 @@ import 'db/db_class.dart';
 
 class LoginPage extends StatelessWidget {
 
-  TextEditingController userController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController userController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
 
   @override

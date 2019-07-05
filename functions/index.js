@@ -19,27 +19,40 @@ admin.initializeApp(functions.config().firebase);
 //   });
 // });
 
-exports.createUser = functions.https.onCall((data, context) => {
-  return admin.auth().createUser({
-    email: data['email'],
-    emailVerified: false,
-    password: data['password'],
-    displayName: 'Amjed Al anqoodi',
-    photoURL: 'http://www.example.com/12345678/photo.png',
-    disabled: false
-  }).then(async (userRecord) => {
-    console.log('Successfully created new user:', userRecord.uid);
+exports.createUser = functions.https.onCall(async (data, context) => {
+  try{
+    const newUser = await admin.auth().createUser({
+      email: data['email'],
+      emailVerified: false,
+      password: data['password'],
+      displayName: 'Amjed Al anqoodi',
+      photoURL: 'http://www.example.com/12345678/photo.png',
+      disabled: false
+  
+    });
+  
     const claims = {
       claim: data['claim']
     };
-    return admin.auth().setCustomUserClaims(userRecord, claims);
+  
+    await admin.auth().setCustomUserClaims(newUser.uid, claims);
 
-  }).then((userRecord) => {
-    return userRecord;
-  }).catch((error) => {
-    console.log('Error creating new user:', error);
-  });
+    console.log('user was created: ' + newUser);
+    return newUser;
+  }catch(error){
+    console.log(error);
+  }
+  
 });
+
+
+// exports.onCreateUser = functions.auth.user().onCreate(userRecord => {
+//   const claims = {
+//     claim: 'Admin'
+//   };
+//   admin.auth().setCustomUserClaims(userRecord.uid, claims);
+//   console.log(userRecord);
+// });
 
 // exports.addTheAdmin = functions.https.onCall((data, context) => {
 //   const email = data['email'];

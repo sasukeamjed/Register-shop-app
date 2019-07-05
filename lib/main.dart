@@ -49,7 +49,8 @@ class AuthPage extends StatelessWidget {
         future: db.create(authUser),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.done){
-            return parseJwt(db.userInstance.idToken).containsKey('admin') ? AdminPage() : Home();
+            print(parseJwt(db.userInstance.idToken));
+            return parseJwt(db.userInstance.idToken)['claim'] == 'Admin' ? AdminPage() : Home();
           }
           else{
             return CircularProgressIndicator();
