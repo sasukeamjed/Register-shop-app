@@ -6,7 +6,8 @@ import 'db/db_class.dart';
 import 'admin_page.dart';
 import 'login_page.dart';
 import 'parse_jwt.dart';
-import 'home_page.dart';
+import 'shop_page.dart';
+import 'customer_page.dart';
 
 import 'models/user_model.dart';
 
@@ -50,7 +51,13 @@ class AuthPage extends StatelessWidget {
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.done){
             print(parseJwt(db.userInstance.idToken));
-            return parseJwt(db.userInstance.idToken)['claim'] == 'Admin' ? AdminPage() : Home();
+            if(parseJwt(db.userInstance.idToken)['claim'] == 'Admin'){
+              return AdminPage();
+            }else if(parseJwt(db.userInstance.idToken)['claim'] == 'Shop'){
+              return Shop();
+            }else {
+              return Customer();
+            }
           }
           else{
             return CircularProgressIndicator();

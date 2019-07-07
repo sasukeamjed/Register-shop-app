@@ -53,7 +53,7 @@ class AdminPage extends StatelessWidget {
               ),
               ClaimRadioButtons(),
               RaisedButton(
-                child: Text('Add a new User ?!'),
+                child: Text('Add a the Shop ?!'),
                 onPressed: () async{
 //                fetchUserByUid('1ZXgy5DtuaToQFwEv0gDicmjMPg2');
 //                await addUser(db.claim);

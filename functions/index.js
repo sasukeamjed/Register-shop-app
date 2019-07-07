@@ -27,7 +27,7 @@ exports.createUser = functions.https.onCall(async (data, context) => {
       password: data['password'],
       displayName: 'Amjed Al anqoodi',
       photoURL: 'http://www.example.com/12345678/photo.png',
-      disabled: false
+      disabled: false,
   
     });
   
