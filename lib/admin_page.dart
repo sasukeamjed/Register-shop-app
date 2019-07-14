@@ -13,9 +13,6 @@ class AdminPage extends StatelessWidget {
 
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController shopNameController = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -30,56 +27,40 @@ class AdminPage extends StatelessWidget {
           },
         ),
       ),
-      body: Padding(
-        //ToDo: Adding Form Widget And Validate Data
-        //ToDo: Adding Location By Choosing From Map And Store It In Location Object
-        padding: const EdgeInsets.all(15.0),
-        child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'This is Home Page',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text('Creat new user?!'),
-                TextField(
-                  controller: shopNameController,
-                  decoration: InputDecoration(labelText: 'Shop Name'),
-                ),
-                TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
-                ),
-                TextField(
-                  controller: passwordController,
-                  decoration: InputDecoration(labelText: 'Password'),
-                ),
-                TextField(
-                  controller: phoneController,
-                  decoration: InputDecoration(labelText: 'Phone number'),
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                SizedBox(
-                  width: 10.0,
-                ),
-                ClaimRadioButtons(),
-                SizedBox(
-                  height: 15.0,
-                ),
-                RaisedButton(
-                  child: Text('Add a new User ?!'),
-                  onPressed: () async{
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'This is Home Page',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text('Creat new user?!'),
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(labelText: 'Email'),
+              ),
+              TextField(
+                controller: passwordController,
+                decoration: InputDecoration(labelText: 'Password'),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              SizedBox(
+                width: 10.0,
+              ),
+              ClaimRadioButtons(),
+              RaisedButton(
+                child: Text('Add a new User ?!'),
+                onPressed: () async{
 //                fetchUserByUid('1ZXgy5DtuaToQFwEv0gDicmjMPg2');
 //                await addUser(db.claim);
-                    await createUser(db.claim);
-                  },
-                ),
-              ],
-            ),
+                  await createUser(db.claim);
+                },
+              ),
+            ],
           ),
         ),
       ),
@@ -99,9 +80,7 @@ class AdminPage extends StatelessWidget {
   addUser(claim) async {
     CloudFunctions.instance.getHttpsCallable(functionName: "addUser").call({
       "email": emailController.text,
-      "password": emailController.text,
-      "shopName": shopNameController.text,
-      "phoneNumber": phoneController.text
+      "password": emailController.text
     }).then((res) {
       print('Done creating a user');
       addAdminRole(emailController.text, claim);

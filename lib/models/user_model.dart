@@ -1,4 +1,5 @@
 class User{
+  //TODO: add assert to requier properties
   final String id;
   final String idToken;
   final String email;
