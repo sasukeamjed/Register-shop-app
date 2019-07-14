@@ -1,5 +1,10 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const cors = require('cors')({ origin: true });
+const Busboy = require('busboy');
+const gcs = require('@google-cloud/firestore');
+const path = require('path');
+const os = require('os');
 
 admin.initializeApp(functions.config().firebase);
 
@@ -19,31 +24,78 @@ admin.initializeApp(functions.config().firebase);
 //   });
 // });
 
-exports.createUser = functions.https.onCall(async (data, context) => {
-  try{
-    const newUser = await admin.auth().createUser({
-      email: data['email'],
-      emailVerified: false,
-      password: data['password'],
-      displayName: 'Amjed Al anqoodi',
-      photoURL: 'http://www.example.com/12345678/photo.png',
-      disabled: false
-  
-    });
-  
-    const claims = {
-      claim: data['claim']
-    };
-  
-    await admin.auth().setCustomUserClaims(newUser.uid, claims);
+// exports.createUser = functions.https.onCall(async (data, context) => {
+//   try {
+//     const newUser = await admin.auth().createUser({
+//       email: data['email'],
+//       phoneNumber: data['phoneNumber'],
+//       emailVerified: false,
+//       password: data['password'],
+//       displayName: data['shopName'],
+//       photoURL: 'http://www.example.com/12345678/photo.png',
+//       disabled: false
+//     });
 
-    console.log('user was created: ' + newUser);
-    return newUser;
-  }catch(error){
-    console.log(error);
-  }
-  
+//     const claims = {
+//       claim: data['claim']
+//     };
+
+//     await admin.auth().setCustomUserClaims(newUser.uid, claims);
+
+//     console.log('user was created: ' + newUser);
+//     return newUser;
+//   } catch (error) {
+//     console.log(error);
+//   }
+
+// });
+
+exports.uploadFile = functions.https.onRequest((req, res) => {
+  cors(req, res, () => {
+
+    if (req.method !== 'POST') {
+      return res.status(500).json({ message: 'Not Allowed' });
+    }
+
+    const busboy = new Busboy({ headers: req.headers });
+    let uploadData = null;
+
+    busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+      const filepath = path.join(os.tmpdir(), filename);
+      uploadData = { file: filepath, type: mimetype };
+      // console.log('filedname :', fieldname);
+      // console.log('file :', file);
+      // console.log('filename :', filename);
+      // console.log('encoding :', encoding);
+      // console.log('mimetype :', mimetype);
+    });
+
+    busboy.on('finish', () => {
+      const bucket = gcs.bucket()
+    });
+
+    res.status(200).json({ message: 'It Worked!' });
+
+  });
 });
+
+// exports.storeImage = functions.https.onRequest((req, res) => {
+//   return cors(req, res, () => {
+//     if (req.method !== 'POST') {
+//       return res.status(500).json({ error: 'Not Allowed' });
+//     }
+
+//     if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
+//       return res.status(401).json({ error: 'Unauthoroized.' });
+//     }
+
+//     let idToken;
+//     idToken = req.headers.authorization.split('Bearer ')[1];
+
+//     const busboy = new Busboy({ headers: req.headers });
+//     busboy.on('file', (fieldname, file, filename, encoding, mimetype) => { });
+//   });
+// });
 
 
 // exports.onCreateUser = functions.auth.user().onCreate(userRecord => {
