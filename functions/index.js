@@ -2,11 +2,21 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const cors = require('cors')({ origin: true });
 const Busboy = require('busboy');
-const gcs = require('@google-cloud/firestore');
 const path = require('path');
 const os = require('os');
+const fs = require('fs');
 
 admin.initializeApp(functions.config().firebase);
+
+const gcconfig = {
+  projectId: "fir-auth-test-a160f",
+  keyFilename: "fir-auth-test-a160f-firebase-adminsdk-ff597-38849e6620.json",
+};
+
+const gcs = admin.storage();
+
+
+
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -61,13 +71,16 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
     let uploadData = null;
 
     busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-      const filepath = path.join(os.tmpdir(), filename);
-      uploadData = { file: filepath, type: mimetype };
+
       console.log('filedname :', fieldname);
       console.log('file :', file);
       console.log('filename :', filename);
       console.log('encoding :', encoding);
       console.log('mimetype :', mimetype);
+
+      const filepath = path.join(os.tmpdir(), filename);
+      uploadData = { file: filepath, type: mimetype };
+      file.pipe(fs.createWriteStream(filepath));
     });
 
     busboy.on('finish', () => {
@@ -79,17 +92,16 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
             contentType: uploadData.type
           }
         },
-      }).then((err, uploadedFile) => {
-
-        if (err) {
-          return res.status(500).json({ error: err });
-        }
+      }).then(() => {
 
         res.status(200).json({ message: 'It Worked!' });
 
+      }).catch((error) => {
+        res.status(500).json({ error: error });
       });
     });
 
+    busboy.end(req.rawBody);
 
 
   });
