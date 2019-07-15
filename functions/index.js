@@ -63,18 +63,34 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
     busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
       const filepath = path.join(os.tmpdir(), filename);
       uploadData = { file: filepath, type: mimetype };
-      // console.log('filedname :', fieldname);
-      // console.log('file :', file);
-      // console.log('filename :', filename);
-      // console.log('encoding :', encoding);
-      // console.log('mimetype :', mimetype);
+      console.log('filedname :', fieldname);
+      console.log('file :', file);
+      console.log('filename :', filename);
+      console.log('encoding :', encoding);
+      console.log('mimetype :', mimetype);
     });
 
     busboy.on('finish', () => {
-      const bucket = gcs.bucket()
+      const bucket = gcs.bucket('fir-auth-test-a160f.appspot.com');
+      bucket.upload(uploadData.file, {
+        uploadType: 'media',
+        metadata: {
+          metadata: {
+            contentType: uploadData.type
+          }
+        },
+      }).then((err, uploadedFile) => {
+
+        if (err) {
+          return res.status(500).json({ error: err });
+        }
+
+        res.status(200).json({ message: 'It Worked!' });
+
+      });
     });
 
-    res.status(200).json({ message: 'It Worked!' });
+
 
   });
 });
