@@ -5,6 +5,7 @@ const Busboy = require('busboy');
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
+const spawn = require('child-process-promise').spawn;
 
 admin.initializeApp(functions.config().firebase);
 
@@ -79,6 +80,7 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
       console.log('mimetype :', mimetype);
 
       const filepath = path.join(os.tmpdir(), filename);
+      console.log('filepath :', filepath);
       uploadData = { file: filepath, type: mimetype };
       file.pipe(fs.createWriteStream(filepath));
     });
@@ -104,6 +106,36 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
     busboy.end(req.rawBody);
 
 
+  });
+});
+
+exports.onFileChange = functions.storage.object().onFinalize(event => {
+  console.log(event);
+  const bucket = event.bucket;
+  const contentType = event.contentType;
+  const filePath = event.name;
+
+  if (path.basename(filePath).startsWith('resized-')) {
+    console.log('We already renamed that file!');
+    return;
+  }
+
+  const destBucket = gcs.bucket(bucket);
+  const tempFilePath = path.join(os.tmpdir(), path.basename(filePath));
+
+  const metadata = {
+    contentType: contentType
+  };
+
+  return destBucket.file(filePath).download({
+    destination: tempFilePath
+  }).then(() => {
+    return spawn('convert', [tempFilePath, '-resize', '500x500', tempFilePath]);
+  }).then(() => {
+    return destBucket.upload(tempFilePath, {
+      destination: 'resized-' + path.basename(filePath),
+      metadata: metadata
+    });
   });
 });
 
