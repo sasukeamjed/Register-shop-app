@@ -1,18 +1,32 @@
-import 'package:cloud_functions/cloud_functions.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:provider/provider.dart';
+
+import 'package:http/http.dart' as http;
+
+import 'package:image_picker/image_picker.dart';
 
 import 'db/db_class.dart';
 import 'widgets/admin_page_widgets.dart';
 import 'parse_jwt.dart';
+import 'widgets/image_picker_widget.dart';
 
 class AdminPage extends StatelessWidget {
 
   final TextEditingController passwordController = TextEditingController();
+
   final TextEditingController emailController = TextEditingController();
+
+  final TextEditingController phoneController = TextEditingController();
+
+  final TextEditingController locationController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +59,15 @@ class AdminPage extends StatelessWidget {
                 controller: passwordController,
                 decoration: InputDecoration(labelText: 'Password'),
               ),
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(labelText: 'Phone Number'),
+              ),
+              TextField(
+                controller: locationController,
+                decoration: InputDecoration(labelText: 'location'),
+              ),
+
               SizedBox(
                 height: 10.0,
               ),
@@ -52,6 +75,7 @@ class AdminPage extends StatelessWidget {
                 width: 10.0,
               ),
               ClaimRadioButtons(),
+              PickImage(),
               RaisedButton(
                 child: Text('Add a new User ?!'),
                 onPressed: () async{
@@ -66,16 +90,6 @@ class AdminPage extends StatelessWidget {
       ),
     );
   }
-
-  // login() async {
-  //   try {
-  //     await FirebaseAuth.instance.signInWithEmailAndPassword(
-  //         email: emailController.text, password: passwordController.text);
-  //     print('LogIn is Succesful');
-  //   } catch (e) {
-  //     print('log in failed with following error $e');
-  //   }
-  // }
 
   addUser(claim) async {
     CloudFunctions.instance.getHttpsCallable(functionName: "addUser").call({
@@ -97,6 +111,7 @@ class AdminPage extends StatelessWidget {
   }
 
   createUser(claim) async{
+
     CloudFunctions.instance.getHttpsCallable(functionName: "createUser").call(
       {
         "email": emailController.text,
@@ -108,6 +123,7 @@ class AdminPage extends StatelessWidget {
     }).catchError((e){
       print(e);
     });
+//    await http.post('https://us-central1-fir-auth-test-a160f.cloudfunctions.net/uploadFile')
   }
 
   fetchUserByUid(uid) async {

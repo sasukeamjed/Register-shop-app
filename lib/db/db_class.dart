@@ -1,11 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:register_shop_app/models/user_model.dart';
 import 'dart:async';
+import 'dart:io';
 
 class Db with ChangeNotifier {
   User _userInstance;
   String _userClaim = '';
+  File userPhoto;
 
   get userInstance => _userInstance;
   get claim => _userClaim;
@@ -51,9 +54,37 @@ class Db with ChangeNotifier {
           idToken: await user.getIdToken(),
           email: user.email,
           name: user.displayName,
-        claimType: _userClaim
+        claimType: _userClaim,
+        userPhoto: userPhoto,
       );
 
+  }
+
+  imageSelectorGallery() async {
+    try{
+      userPhoto = await ImagePicker.pickImage(
+        source: ImageSource.gallery,
+        // maxHeight: 50.0,
+        // maxWidth: 50.0,
+      );
+      print("You selected gallery image : " + userPhoto.path);
+//        setState(() {});
+    }catch(e){
+      print('There was an error: $e');
+    }
+    notifyListeners();
+  }
+
+  //display image selected from camera
+  imageSelectorCamera() async {
+    userPhoto = await ImagePicker.pickImage(
+      source: ImageSource.camera,
+      //maxHeight: 50.0,
+      //maxWidth: 50.0,
+    );
+    print("You selected camera image : " + userPhoto.path);
+//      setState(() {});
+    notifyListeners();
   }
 
 }

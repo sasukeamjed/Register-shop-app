@@ -27,6 +27,8 @@ dependencies:
   cloud_firestore:
   cloud_functions:
   provider:
+  image_picker:
+  http:
 
 
 dev_dependencies:
