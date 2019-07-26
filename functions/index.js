@@ -6,8 +6,9 @@ const path = require('path');
 const os = require('os');
 const fs = require('fs');
 const spawn = require('child-process-promise').spawn;
+const uuid = require('uuid/v4');
 
-admin.initializeApp(functions.config().firebase);
+admin.initializeApp({ credential: admin.credential.cert(require('./fir-auth-test-a160f-firebase-adminsdk-ff597-38849e6620.json')) });
 
 const gcconfig = {
   projectId: "fir-auth-test-a160f",
@@ -68,42 +69,59 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
       return res.status(500).json({ message: 'Not Allowed' });
     }
 
+    if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'UnAutherized' });
+    }
+
+    let idToken;
+    idToken = req.headers.authorization.split('Bearer ')[1];
+
     const busboy = new Busboy({ headers: req.headers });
     let uploadData = null;
+    let oldImagePath;
 
     busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
 
-      console.log('filedname :', fieldname);
-      console.log('file :', file);
-      console.log('filename :', filename);
-      console.log('encoding :', encoding);
-      console.log('mimetype :', mimetype);
-
       const filepath = path.join(os.tmpdir(), filename);
-      console.log('filepath :', filepath);
-      uploadData = { file: filepath, type: mimetype };
+
+      uploadData = { filepath: filepath, type: mimetype, name: filename };
       file.pipe(fs.createWriteStream(filepath));
+
+    });
+
+    busboy.on('field', (fieldname, value) => {
+      oldImagePath = decodeURIComponent(value);
     });
 
     busboy.on('finish', () => {
       const bucket = gcs.bucket('fir-auth-test-a160f.appspot.com');
-      bucket.upload(uploadData.file, {
-        uploadType: 'media',
-        metadata: {
+      const id = uuid();
+      let imagePath = 'images/' + id + '-' + uploadData.name;
+      if (oldImagePath) {
+        imagePath = oldImagePath;
+      }
+      return admin.auth().verifyIdToken(idToken).then(decodedToken => {
+        return bucket.upload(uploadData.filePath, {
+          uploadType: 'media',
+          destination: imagePath,
           metadata: {
-            contentType: uploadData.type
+            metadata: uploadData.type,
+            firebaseStorageDownloadToken: id
           }
-        },
+        });
       }).then(() => {
-
-        res.status(200).json({ message: 'It Worked!' });
-
-      }).catch((error) => {
-        res.status(500).json({ error: error });
+        return res.status(201).json({
+          imageUrl: 'https://firebasestorage.googleapis.com/v0/b/' + bucket.name + '/o/' + encodeURIComponent(imagePath) + '?alt=media&token=' + id,
+          imagePath: imagePath
+        });
+      }).catch(error => {
+        res.status(401).json({
+          error: 'Unauthorized!'
+        });
       });
     });
 
-    busboy.end(req.rawBody);
+    return busboy.end(req.rawBody);
 
 
   });

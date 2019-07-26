@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'db/db_class.dart';
-import 'admin_page.dart';
-import 'login_page.dart';
+import 'package:register_shop_app/pages/admin_pages/admin_page.dart';
+import 'package:register_shop_app/pages/login_page.dart';
 import 'parse_jwt.dart';
 import 'shop_page.dart';
-import 'customer_page.dart';
+import 'package:register_shop_app/pages/customer_page.dart';
 
 import 'models/user_model.dart';
 

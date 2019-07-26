@@ -1,22 +1,16 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:http/http.dart' as http;
+import 'package:register_shop_app/db/db_class.dart';
+import 'package:register_shop_app/widgets/admin_page_widgets.dart';
+import 'package:register_shop_app/widgets/image_picker_widget.dart';
 
-import 'package:image_picker/image_picker.dart';
 
-import 'db/db_class.dart';
-import 'widgets/admin_page_widgets.dart';
-import 'parse_jwt.dart';
-import 'widgets/image_picker_widget.dart';
 
 class AdminPage extends StatelessWidget {
 

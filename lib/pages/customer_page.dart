@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'db/db_class.dart';
+
+import 'package:register_shop_app/db/db_class.dart';
+
 
 class Customer extends StatelessWidget {
 
