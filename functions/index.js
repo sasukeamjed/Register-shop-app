@@ -116,6 +116,8 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
         });
       }).catch(error => {
         res.status(401).json({
+          error: error,
+          idToken,
           error: 'Unauthorized!'
         });
       });

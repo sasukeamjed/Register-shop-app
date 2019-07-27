@@ -45,6 +45,7 @@ class AuthPage extends StatelessWidget {
     var db = Provider.of<Db>(context);
     var authUser = Provider.of<FirebaseUser>(context);
 
+
     if (authUser != null) {
       return FutureBuilder<User>(
         future: db.create(authUser),
@@ -52,6 +53,7 @@ class AuthPage extends StatelessWidget {
           if(snapshot.connectionState == ConnectionState.done){
             print(parseJwt(db.userInstance.idToken));
             if(parseJwt(db.userInstance.idToken)['claim'] == 'Admin'){
+              print('this is the idToken: ' + db.userInstance.idToken);
               return AdminPage();
             }else if(parseJwt(db.userInstance.idToken)['claim'] == 'Shop'){
               return Shop();

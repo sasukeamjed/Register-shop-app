@@ -5,7 +5,9 @@ import 'dart:io';
 
 class PickImage extends StatefulWidget {
 
-  File imageFile;
+  Function imagePickerFunction;
+
+  PickImage({this.imagePickerFunction});
 
   @override
   _PickImageState createState() => _PickImageState();
@@ -18,6 +20,7 @@ class _PickImageState extends State<PickImage> {
 
 //  //save the result of camera file
 //  File cameraFile;
+  File imageFile;
 
 
   @override
@@ -26,13 +29,15 @@ class _PickImageState extends State<PickImage> {
 
     imageSelectorGallery() async {
       try {
-        widget.imageFile = await ImagePicker.pickImage(
+        imageFile = await ImagePicker.pickImage(
           source: ImageSource.gallery,
           // maxHeight: 50.0,
           // maxWidth: 50.0,
         );
-        print("You selected gallery image : " + widget.imageFile.path);
-        setState(() {});
+        print("You selected gallery image : " + imageFile.path);
+        setState(() {
+          widget.imagePickerFunction(imageFile);
+        });
       } catch (e) {
         print('There was an error: $e');
       }
@@ -40,13 +45,15 @@ class _PickImageState extends State<PickImage> {
 
     //display image selected from camera
     imageSelectorCamera() async {
-      widget.imageFile = await ImagePicker.pickImage(
+      imageFile = await ImagePicker.pickImage(
         source: ImageSource.camera,
         //maxHeight: 50.0,
         //maxWidth: 50.0,
       );
-      print("You selected camera image : " + widget.imageFile.path);
-      setState(() {});
+      print("You selected camera image : " + imageFile.path);
+      setState(() {
+        widget.imagePickerFunction(imageFile);
+      });
     }
 
 
@@ -62,10 +69,10 @@ class _PickImageState extends State<PickImage> {
               child: Text('Select Image from Camera'),
               onPressed: imageSelectorCamera,
             ),
-            widget.imageFile == null ? Container() : Container(
+            imageFile == null ? Container() : Container(
               width: 200,
               height: 300,
-              child: Image.file(widget.imageFile),
+              child: Image.file(imageFile),
             )
           ],
         );

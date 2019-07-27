@@ -16,6 +16,8 @@ import 'package:mime/mime.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
+import 'dart:convert';
+
 class AdminPage extends StatelessWidget {
 
   final TextEditingController passwordController = TextEditingController();
@@ -25,6 +27,8 @@ class AdminPage extends StatelessWidget {
   final TextEditingController phoneController = TextEditingController();
 
   final TextEditingController locationController = TextEditingController();
+
+  File imageFile;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +77,7 @@ class AdminPage extends StatelessWidget {
                 width: 10.0,
               ),
               ClaimRadioButtons(),
-              PickImage(),
+              PickImage(imagePickerFunction: setImageFile,),
               RaisedButton(
                 child: Text('Add a new User ?!'),
                 onPressed: () async{
@@ -82,11 +86,26 @@ class AdminPage extends StatelessWidget {
                   await createUser(db.claim);
                 },
               ),
+              RaisedButton(
+                child: Text('Upload Image'),
+                onPressed: () async{
+//                  uploadImage(imageFile, db.userInstance.idToken);
+                },
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void setImageFile(File file){
+    imageFile = file;
+    if(imageFile == null){
+      print('image file is null');
+    }else{
+      print('image file is not a null');
+    }
   }
 
   addUser(claim) async {
@@ -108,7 +127,7 @@ class AdminPage extends StatelessWidget {
     // }
   }
 
-  Future<Map<String, String>> uploadImage(File image, {String imagePath}) async{
+  Future<Map<String, String>> uploadImage(File image, String idToken, {String imagePath}) async{
     final mimeTypeData = lookupMimeType(image.path).split('/');
     final imageUploadRequest = http.MultipartRequest('POST', Uri.parse('https://us-central1-fir-auth-test-a160f.cloudfunctions.net/uploadFile'));
     final file = await http.MultipartFile.fromPath('image', image.path, contentType: MediaType(mimeTypeData[0], mimeTypeData[1]));
@@ -116,6 +135,28 @@ class AdminPage extends StatelessWidget {
 
     if(imagePath != null){
       imageUploadRequest.fields['imagePath'] = Uri.encodeComponent(imagePath);
+    }
+
+
+
+    imageUploadRequest.headers['Authorization'] = 'Bearer $idToken';
+
+    try{
+      //MultipartRequest return a response of streams it means in chuncks, which divide the data in many parts
+      final streamedResponse = await imageUploadRequest.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      if(response.statusCode != 200 && response.statusCode != 201){
+        print('Something went wrong!');
+        print(json.decode(response.body));
+        return null;
+      }
+
+      final responseData = json.decode(response.body);
+      return responseData;
+
+    }catch(e){
+      print(e);
+      return null;
     }
   }
 
