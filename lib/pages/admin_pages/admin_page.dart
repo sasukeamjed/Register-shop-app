@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:cloud_functions/cloud_functions.dart';
@@ -7,10 +9,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 import 'package:register_shop_app/db/db_class.dart';
-import 'package:register_shop_app/widgets/admin_page_widgets.dart';
+import 'package:register_shop_app/widgets/claim_radio_buttons.dart';
 import 'package:register_shop_app/widgets/image_picker_widget.dart';
 
-
+import 'package:mime/mime.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 class AdminPage extends StatelessWidget {
 
@@ -102,6 +106,17 @@ class AdminPage extends StatelessWidget {
     // } catch (e) {
     //   print('Sign up failed with following error $e');
     // }
+  }
+
+  Future<Map<String, String>> uploadImage(File image, {String imagePath}) async{
+    final mimeTypeData = lookupMimeType(image.path).split('/');
+    final imageUploadRequest = http.MultipartRequest('POST', Uri.parse('https://us-central1-fir-auth-test-a160f.cloudfunctions.net/uploadFile'));
+    final file = await http.MultipartFile.fromPath('image', image.path, contentType: MediaType(mimeTypeData[0], mimeTypeData[1]));
+    imageUploadRequest.files.add(file);
+
+    if(imagePath != null){
+      imageUploadRequest.fields['imagePath'] = Uri.encodeComponent(imagePath);
+    }
   }
 
   createUser(claim) async{

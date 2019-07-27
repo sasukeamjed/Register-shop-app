@@ -55,37 +55,11 @@ class Db with ChangeNotifier {
           email: user.email,
           name: user.displayName,
         claimType: _userClaim,
-        userPhoto: userPhoto,
+        userPhotoUrl: '',
       );
 
   }
 
-  imageSelectorGallery() async {
-    try{
-      userPhoto = await ImagePicker.pickImage(
-        source: ImageSource.gallery,
-        // maxHeight: 50.0,
-        // maxWidth: 50.0,
-      );
-      print("You selected gallery image : " + userPhoto.path);
-//        setState(() {});
-    }catch(e){
-      print('There was an error: $e');
-    }
-    notifyListeners();
-  }
-
-  //display image selected from camera
-  imageSelectorCamera() async {
-    userPhoto = await ImagePicker.pickImage(
-      source: ImageSource.camera,
-      //maxHeight: 50.0,
-      //maxWidth: 50.0,
-    );
-    print("You selected camera image : " + userPhoto.path);
-//      setState(() {});
-    notifyListeners();
-  }
 
 }
 

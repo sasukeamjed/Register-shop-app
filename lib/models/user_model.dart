@@ -7,8 +7,8 @@ class User{
   final String email;
   final String name;
   final String claimType;
-  final File userPhoto;
+  final String userPhotoUrl;
 
-  User({this.id, this.idToken, this.email, this.name, this.claimType, this.userPhoto});
+  User({this.id, this.idToken, this.email, this.name, this.claimType, this.userPhotoUrl});
 
 }

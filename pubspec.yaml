@@ -29,6 +29,7 @@ dependencies:
   provider:
   image_picker:
   http:
+  mime:
 
 
 dev_dependencies:
