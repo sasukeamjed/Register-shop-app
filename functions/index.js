@@ -101,7 +101,8 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
         imagePath = oldImagePath;
       }
       return admin.auth().verifyIdToken(idToken).then(decodedToken => {
-        return bucket.upload(uploadData.filePath, {
+        console.log('verifying is done!!');
+        return bucket.upload(uploadData.filepath, {
           uploadType: 'media',
           destination: imagePath,
           metadata: {
@@ -110,6 +111,7 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
           }
         });
       }).then(() => {
+        console.log('after the verifying is done!!');
         return res.status(201).json({
           imageUrl: 'https://firebasestorage.googleapis.com/v0/b/' + bucket.name + '/o/' + encodeURIComponent(imagePath) + '?alt=media&token=' + id,
           imagePath: imagePath
@@ -118,7 +120,7 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
         res.status(401).json({
           error: error,
           idToken,
-          error: 'Unauthorized!'
+          errorMessage: 'Unauthorized!'
         });
       });
     });

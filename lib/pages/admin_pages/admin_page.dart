@@ -89,7 +89,8 @@ class AdminPage extends StatelessWidget {
               RaisedButton(
                 child: Text('Upload Image'),
                 onPressed: () async{
-//                  uploadImage(imageFile, db.userInstance.idToken);
+                  final Map<String, dynamic> data = await uploadImage(imageFile, db.userInstance.idToken);
+                  print(data);
                 },
               ),
             ],
@@ -127,7 +128,7 @@ class AdminPage extends StatelessWidget {
     // }
   }
 
-  Future<Map<String, String>> uploadImage(File image, String idToken, {String imagePath}) async{
+  Future<Map<String, dynamic>> uploadImage(File image, String idToken, {String imagePath}) async{
     final mimeTypeData = lookupMimeType(image.path).split('/');
     final imageUploadRequest = http.MultipartRequest('POST', Uri.parse('https://us-central1-fir-auth-test-a160f.cloudfunctions.net/uploadFile'));
     final file = await http.MultipartFile.fromPath('image', image.path, contentType: MediaType(mimeTypeData[0], mimeTypeData[1]));
