@@ -22,7 +22,10 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "firebase-functions-test": "^0.1.6"
+    "firebase-functions-test": "^0.1.6",
+    "marked": "^0.7.0",
+    "marked-terminal": "^3.2.0"
   },
+  "peerDependencies": {},
   "private": true
 }

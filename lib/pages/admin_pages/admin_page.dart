@@ -19,6 +19,7 @@ import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
 
 class AdminPage extends StatelessWidget {
+  final TextEditingController shopNameController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
 
@@ -54,6 +55,10 @@ class AdminPage extends StatelessWidget {
               ),
               Text('Creat new user?!'),
               TextField(
+                controller: shopNameController,
+                decoration: InputDecoration(labelText: 'Shop Name'),
+              ),
+              TextField(
                 controller: emailController,
                 decoration: InputDecoration(labelText: 'Email'),
               ),
@@ -62,14 +67,13 @@ class AdminPage extends StatelessWidget {
                 decoration: InputDecoration(labelText: 'Password'),
               ),
               TextField(
-                controller: emailController,
+                controller: phoneController,
                 decoration: InputDecoration(labelText: 'Phone Number'),
               ),
               TextField(
                 controller: locationController,
                 decoration: InputDecoration(labelText: 'location'),
               ),
-
               SizedBox(
                 height: 10.0,
               ),
@@ -77,10 +81,12 @@ class AdminPage extends StatelessWidget {
                 width: 10.0,
               ),
               ClaimRadioButtons(),
-              PickImage(imagePickerFunction: setImageFile,),
+              PickImage(
+                imagePickerFunction: setImageFile,
+              ),
               RaisedButton(
                 child: Text('Add a new User ?!'),
-                onPressed: () async{
+                onPressed: () async {
 //                fetchUserByUid('1ZXgy5DtuaToQFwEv0gDicmjMPg2');
 //                await addUser(db.claim);
                   await createUser(db.claim);
@@ -88,8 +94,11 @@ class AdminPage extends StatelessWidget {
               ),
               RaisedButton(
                 child: Text('Upload Image'),
-                onPressed: () async{
-                  final Map<String, dynamic> data = await uploadImage(imageFile, db.userInstance.idToken);
+                onPressed: () async {
+                  final Map<String, dynamic> data = await uploadImage(
+                      image: imageFile,
+                      shopName: shopNameController.text,
+                      idToken: db.userInstance.idToken);
                   print(data);
                 },
               ),
@@ -100,11 +109,11 @@ class AdminPage extends StatelessWidget {
     );
   }
 
-  void setImageFile(File file){
+  void setImageFile(File file) {
     imageFile = file;
-    if(imageFile == null){
+    if (imageFile == null) {
       print('image file is null');
-    }else{
+    } else {
       print('image file is not a null');
     }
   }
@@ -128,25 +137,32 @@ class AdminPage extends StatelessWidget {
     // }
   }
 
-  Future<Map<String, dynamic>> uploadImage(File image, String idToken, {String imagePath}) async{
-    final mimeTypeData = lookupMimeType(image.path).split('/');
-    final imageUploadRequest = http.MultipartRequest('POST', Uri.parse('https://us-central1-fir-auth-test-a160f.cloudfunctions.net/uploadFile'));
-    final file = await http.MultipartFile.fromPath('image', image.path, contentType: MediaType(mimeTypeData[0], mimeTypeData[1]));
-    imageUploadRequest.files.add(file);
-
-    if(imagePath != null){
-      imageUploadRequest.fields['imagePath'] = Uri.encodeComponent(imagePath);
+  Future<Map<String, dynamic>> uploadImage(
+      {File image, String shopName, String idToken, String imagePath}) async {
+    if(shopName == null){
+      return null;
     }
+    try {
+      final mimeTypeData = lookupMimeType(image.path).split('/');
+      final imageUploadRequest = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              'https://us-central1-fir-auth-test-a160f.cloudfunctions.net/uploadFile'));
+      final file = await http.MultipartFile.fromPath('image', image.path,
+          contentType: MediaType(mimeTypeData[0], mimeTypeData[1]));
+      imageUploadRequest.files.add(file);
 
+      if (imagePath != null) {
+        imageUploadRequest.fields['imagePath'] = Uri.encodeComponent(imagePath);
+      }
 
+      imageUploadRequest.headers['Authorization'] = 'Bearer $idToken';
+      imageUploadRequest.headers['name'] = shopName;
 
-    imageUploadRequest.headers['Authorization'] = 'Bearer $idToken';
-
-    try{
       //MultipartRequest return a response of streams it means in chuncks, which divide the data in many parts
       final streamedResponse = await imageUploadRequest.send();
       final response = await http.Response.fromStream(streamedResponse);
-      if(response.statusCode != 200 && response.statusCode != 201){
+      if (response.statusCode != 200 && response.statusCode != 201) {
         print('Something went wrong!');
         print(json.decode(response.body));
         return null;
@@ -154,62 +170,59 @@ class AdminPage extends StatelessWidget {
 
       final responseData = json.decode(response.body);
       return responseData;
-
-    }catch(e){
-      print(e);
+    } catch (e) {
+      print('there is an error: +++++++++++++ $e +++++++++++++');
       return null;
     }
   }
 
-  createUser(claim) async{
-
-    CloudFunctions.instance.getHttpsCallable(functionName: "createUser").call(
-      {
-        "email": emailController.text,
-        "password": passwordController.text,
-        "claim" : claim
-      }
-    ).then((res){
+  createUser(claim) async {
+    CloudFunctions.instance.getHttpsCallable(functionName: "createUser").call({
+      "email": emailController.text,
+      "password": passwordController.text,
+      "claim": claim
+    }).then((res) {
       print(res.data);
-    }).catchError((e){
+    }).catchError((e) {
       print(e);
     });
 //    await http.post('https://us-central1-fir-auth-test-a160f.cloudfunctions.net/uploadFile')
   }
 
   fetchUserByUid(uid) async {
-
     CloudFunctions.instance
         .getHttpsCallable(functionName: "fetchUserByUid")
         .call({"uid": uid}).then((res) {
-          print(res.data['email']);
-          print('Done getting a user');
-        }).catchError((e) {
-          print(e);
+      print(res.data['email']);
+      print('Done getting a user');
+    }).catchError((e) {
+      print(e);
     });
   }
 
-  fetchAllUsers() async{
-    CloudFunctions.instance.getHttpsCallable(functionName: 'getAllUsers').call().then((res){
+  fetchAllUsers() async {
+    CloudFunctions.instance
+        .getHttpsCallable(functionName: 'getAllUsers')
+        .call()
+        .then((res) {
       print('function getAllUsers is called');
       print(res);
-    }).catchError((e){
+    }).catchError((e) {
       print(e);
     });
   }
 
-  addAdminRole(email, claim) async{
-    CloudFunctions.instance.getHttpsCallable(functionName: 'addTheAdmin').call({
-      "email": email,
-      "claim": claim
-    }).then((res){
+  addAdminRole(email, claim) async {
+    CloudFunctions.instance
+        .getHttpsCallable(functionName: 'addTheAdmin')
+        .call({"email": email, "claim": claim}).then((res) {
       print('Addmin Roles is Added');
-    }).catchError((e){
+    }).catchError((e) {
       print(e);
     });
   }
 
-  fetchUserByEmail(email) async{
+  fetchUserByEmail(email) async {
     CloudFunctions.instance
         .getHttpsCallable(functionName: "fetchUserByEmail")
         .call({

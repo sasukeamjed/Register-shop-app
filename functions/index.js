@@ -64,6 +64,7 @@ const gcs = admin.storage();
 
 exports.uploadFile = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
+    // console.log(req);
 
     if (req.method !== 'POST') {
       return res.status(500).json({ message: 'Not Allowed' });
@@ -72,6 +73,8 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
     if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
       return res.status(401).json({ error: 'UnAutherized' });
     }
+
+    const shopName = req.headers.name;
 
     let idToken;
     idToken = req.headers.authorization.split('Bearer ')[1];
@@ -96,7 +99,7 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
     busboy.on('finish', () => {
       const bucket = gcs.bucket('fir-auth-test-a160f.appspot.com');
       const id = uuid();
-      let imagePath = 'images/' + id + '-' + uploadData.name;
+      let imagePath = 'images/' + shopName + '/' + shopName + id + '-' + uploadData.name;
       if (oldImagePath) {
         imagePath = oldImagePath;
       }
@@ -111,7 +114,6 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
           }
         });
       }).then(() => {
-        console.log('after the verifying is done!!');
         return res.status(201).json({
           imageUrl: 'https://firebasestorage.googleapis.com/v0/b/' + bucket.name + '/o/' + encodeURIComponent(imagePath) + '?alt=media&token=' + id,
           imagePath: imagePath
@@ -132,8 +134,9 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
 });
 
 exports.onFileChange = functions.storage.object().onFinalize(event => {
-  console.log(event);
+  // console.log(event);
   const bucket = event.bucket;
+  console.log(event);
   const contentType = event.contentType;
   const filePath = event.name;
 
@@ -142,7 +145,7 @@ exports.onFileChange = functions.storage.object().onFinalize(event => {
     return;
   }
 
-  const destBucket = gcs.bucket(bucket);
+  const destBucket = gcs.bucket(bucket + filePath);
   const tempFilePath = path.join(os.tmpdir(), path.basename(filePath));
 
   const metadata = {
