@@ -18,7 +18,7 @@ import 'package:http_parser/http_parser.dart';
 
 import 'dart:convert';
 
-class AdminPage extends StatelessWidget {
+class AdminsPage extends StatelessWidget {
   final TextEditingController shopNameController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
