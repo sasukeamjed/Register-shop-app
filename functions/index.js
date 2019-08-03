@@ -133,13 +133,13 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
   });
 });
 
-exports.onFileChange = functions.storage.object().onFinalize( async (event) => {
+exports.onFileChange = functions.storage.object().onFinalize(async (event) => {
   const bucket = event.bucket;
   const contentType = event.contentType;
   const filePath = event.name;
 
   const shopName = path.basename(filePath).split('-')[0];
-  console.log(shopName);
+  // console.log(shopName);
 
   if (path.basename(filePath).startsWith('resized-')) {
     console.log('We already renamed that file!');
@@ -153,11 +153,10 @@ exports.onFileChange = functions.storage.object().onFinalize( async (event) => {
     contentType: contentType
   };
 
-  await destBucket.delete(filePath);
-  console.log('file has been deleted');
-  
   return destBucket.file(filePath).download({
     destination: tempFilePath
+  }).then(() => {
+    return destBucket.file(filePath).delete();
   }).then(() => {
     return spawn('convert', [tempFilePath, '-resize', '500x500', tempFilePath]);
   }).then(() => {
