@@ -139,7 +139,7 @@ class AdminPage extends StatelessWidget {
 
   Future<Map<String, dynamic>> uploadImage(
       {File image, String shopName, String idToken, String imagePath}) async {
-    if(shopName == null){
+    if(shopName == null || shopName == ''){
       return null;
     }
     try {

@@ -99,7 +99,7 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
     busboy.on('finish', () => {
       const bucket = gcs.bucket('fir-auth-test-a160f.appspot.com');
       const id = uuid();
-      let imagePath = 'images/' + shopName + '/' + shopName + id + '-' + uploadData.name;
+      let imagePath = 'images/' + shopName + '/' + shopName + '-' + id + '-' + uploadData.name;
       if (oldImagePath) {
         imagePath = oldImagePath;
       }
@@ -133,34 +133,40 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
   });
 });
 
-exports.onFileChange = functions.storage.object().onFinalize(event => {
-  // console.log(event);
+exports.onFileChange = functions.storage.object().onFinalize( async (event) => {
   const bucket = event.bucket;
-  console.log(event);
   const contentType = event.contentType;
   const filePath = event.name;
+
+  const shopName = path.basename(filePath).split('-')[0];
+  console.log(shopName);
 
   if (path.basename(filePath).startsWith('resized-')) {
     console.log('We already renamed that file!');
     return;
   }
 
-  const destBucket = gcs.bucket(bucket + filePath);
+  const destBucket = gcs.bucket(bucket);
   const tempFilePath = path.join(os.tmpdir(), path.basename(filePath));
 
   const metadata = {
     contentType: contentType
   };
 
+  await destBucket.delete(filePath);
+  console.log('file has been deleted');
+  
   return destBucket.file(filePath).download({
     destination: tempFilePath
   }).then(() => {
     return spawn('convert', [tempFilePath, '-resize', '500x500', tempFilePath]);
   }).then(() => {
     return destBucket.upload(tempFilePath, {
-      destination: 'resized-' + path.basename(filePath),
+      destination: 'images/' + shopName + '/' + 'resized-' + path.basename(filePath),
       metadata: metadata
     });
+  }).catch(e => {
+    console.log('there is an error: ' + e);
   });
 });
 
