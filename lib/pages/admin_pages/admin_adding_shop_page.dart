@@ -18,7 +18,8 @@ import 'package:http_parser/http_parser.dart';
 
 import 'dart:convert';
 
-class AdminsPage extends StatelessWidget {
+class AdminAddingShopPage extends StatelessWidget {
+
   final TextEditingController shopNameController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
@@ -34,17 +35,7 @@ class AdminsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var db = Provider.of<Db>(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(db.userInstance.email),
-        leading: IconButton(
-          icon: Icon(Icons.exit_to_app),
-          onPressed: () async {
-            await db.signOut();
-          },
-        ),
-      ),
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -85,28 +76,22 @@ class AdminsPage extends StatelessWidget {
                 imagePickerFunction: setImageFile,
               ),
               RaisedButton(
-                child: Text('Add a new User ?!'),
+                child: Text('Add a new Shop ?!'),
                 onPressed: () async {
 //                fetchUserByUid('1ZXgy5DtuaToQFwEv0gDicmjMPg2');
 //                await addUser(db.claim);
-                  await createUser(db.claim);
-                },
-              ),
-              RaisedButton(
-                child: Text('Upload Image'),
-                onPressed: () async {
                   final Map<String, dynamic> data = await uploadImage(
                       image: imageFile,
                       shopName: shopNameController.text,
                       idToken: db.userInstance.idToken);
                   print(data);
+                  await createShop(db.claim, imageUrl: data["imageUrl"]);
                 },
               ),
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 
   void setImageFile(File file) {
@@ -137,8 +122,7 @@ class AdminsPage extends StatelessWidget {
     // }
   }
 
-  Future<Map<String, dynamic>> uploadImage(
-      {File image, String shopName, String idToken, String imagePath}) async {
+  Future<Map<String, dynamic>> uploadImage({File image, String shopName, String idToken, String imagePath}) async {
     if(shopName == null || shopName == ''){
       return null;
     }
@@ -176,17 +160,17 @@ class AdminsPage extends StatelessWidget {
     }
   }
 
-  createUser(claim) async {
-    CloudFunctions.instance.getHttpsCallable(functionName: "createUser").call({
+  createShop(claim, {String imageUrl}) async {
+    CloudFunctions.instance.getHttpsCallable(functionName: "createShop").call({
       "email": emailController.text,
       "password": passwordController.text,
-      "claim": claim
+      "claim": claim,
+      "imageUrl" : imageUrl
     }).then((res) {
       print(res.data);
     }).catchError((e) {
       print(e);
     });
-//    await http.post('https://us-central1-fir-auth-test-a160f.cloudfunctions.net/uploadFile')
   }
 
   fetchUserByUid(uid) async {

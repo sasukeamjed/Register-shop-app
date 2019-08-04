@@ -36,31 +36,31 @@ const gcs = admin.storage();
 //   });
 // });
 
-// exports.createUser = functions.https.onCall(async (data, context) => {
-//   try {
-//     const newUser = await admin.auth().createUser({
-//       email: data['email'],
-//       phoneNumber: data['phoneNumber'],
-//       emailVerified: false,
-//       password: data['password'],
-//       displayName: data['shopName'],
-//       photoURL: 'http://www.example.com/12345678/photo.png',
-//       disabled: false
-//     });
+exports.createShop = functions.https.onCall(async (data, context) => {
+  try {
+    const newUser = await admin.auth().createUser({
+      email: data['email'],
+      phoneNumber: data['phoneNumber'],
+      emailVerified: false,
+      password: data['password'],
+      displayName: data['shopName'],
+      photoURL: data['imageUrl'],
+      disabled: false
+    });
 
-//     const claims = {
-//       claim: data['claim']
-//     };
+    const claims = {
+      claim: data['claim']
+    };
 
-//     await admin.auth().setCustomUserClaims(newUser.uid, claims);
+    await admin.auth().setCustomUserClaims(newUser.uid, claims);
 
-//     console.log('user was created: ' + newUser);
-//     return newUser;
-//   } catch (error) {
-//     console.log(error);
-//   }
+    console.log('user was created: ' + newUser);
+    return newUser;
+  } catch (error) {
+    console.log(error);
+  }
 
-// });
+});
 
 exports.uploadFile = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
@@ -128,8 +128,6 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
     });
 
     return busboy.end(req.rawBody);
-
-
   });
 });
 

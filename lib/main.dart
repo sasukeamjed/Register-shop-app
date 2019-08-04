@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:register_shop_app/pages/admin_pages/admin_main.dart';
 import 'db/db_class.dart';
 import 'package:register_shop_app/pages/admin_pages/admin_adding_shop_page.dart';
 import 'package:register_shop_app/pages/login_page.dart';
@@ -40,7 +41,6 @@ class MyApp extends StatelessWidget {
 
 class AuthPage extends StatelessWidget {
 
-
   @override
   Widget build(BuildContext context) {
     var db = Provider.of<Db>(context);
@@ -55,7 +55,7 @@ class AuthPage extends StatelessWidget {
             print(parseJwt(db.userInstance.idToken));
             if(parseJwt(db.userInstance.idToken)['claim'] == 'Admin'){
               print('this is the idToken: ' + db.userInstance.idToken);
-              return AdminsPage();
+              return AdminMain();
             }else if(parseJwt(db.userInstance.idToken)['claim'] == 'Shop'){
               return Shop();
             }else {
