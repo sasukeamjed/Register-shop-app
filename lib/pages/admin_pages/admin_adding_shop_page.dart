@@ -19,7 +19,6 @@ import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
 
 class AdminAddingShopPage extends StatelessWidget {
-
   final TextEditingController shopNameController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
@@ -36,62 +35,63 @@ class AdminAddingShopPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var db = Provider.of<Db>(context);
     return SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'This is Home Page',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text('Creat new user?!'),
-              TextField(
-                controller: shopNameController,
-                decoration: InputDecoration(labelText: 'Shop Name'),
-              ),
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(labelText: 'Email'),
-              ),
-              TextField(
-                controller: passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
-              ),
-              TextField(
-                controller: phoneController,
-                decoration: InputDecoration(labelText: 'Phone Number'),
-              ),
-              TextField(
-                controller: locationController,
-                decoration: InputDecoration(labelText: 'location'),
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              SizedBox(
-                width: 10.0,
-              ),
-              ClaimRadioButtons(),
-              PickImage(
-                imagePickerFunction: setImageFile,
-              ),
-              RaisedButton(
-                child: Text('Add a new Shop ?!'),
-                onPressed: () async {
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'This is Home Page',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text('Creat new user?!'),
+            TextField(
+              controller: shopNameController,
+              decoration: InputDecoration(labelText: 'Shop Name'),
+            ),
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+            ),
+            TextField(
+              controller: passwordController,
+              decoration: InputDecoration(labelText: 'Password'),
+            ),
+            TextField(
+              controller: phoneController,
+              decoration: InputDecoration(labelText: 'Phone Number'),
+            ),
+            TextField(
+              controller: locationController,
+              decoration: InputDecoration(labelText: 'location'),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            SizedBox(
+              width: 10.0,
+            ),
+            ClaimRadioButtons(),
+            PickImage(
+              imagePickerFunction: setImageFile,
+            ),
+            RaisedButton(
+              child: Text('Add a new Shop ?!'),
+              onPressed: () async {
 //                fetchUserByUid('1ZXgy5DtuaToQFwEv0gDicmjMPg2');
 //                await addUser(db.claim);
-                  final Map<String, dynamic> data = await uploadImage(
-                      image: imageFile,
-                      shopName: shopNameController.text,
-                      idToken: db.userInstance.idToken);
-                  print(data);
+                uploadImage(
+                        image: imageFile,
+                        shopName: shopNameController.text,
+                        idToken: db.userInstance.idToken)
+                    .then((data) async {
                   await createShop(db.claim, imageUrl: data["imageUrl"]);
-                },
-              ),
-            ],
-          ),
+                });
+              },
+            ),
+          ],
         ),
-      );
+      ),
+    );
   }
 
   void setImageFile(File file) {
@@ -122,8 +122,9 @@ class AdminAddingShopPage extends StatelessWidget {
     // }
   }
 
-  Future<Map<String, dynamic>> uploadImage({File image, String shopName, String idToken, String imagePath}) async {
-    if(shopName == null || shopName == ''){
+  Future<Map<String, dynamic>> uploadImage(
+      {File image, String shopName, String idToken, String imagePath}) async {
+    if (shopName == null || shopName == '') {
       return null;
     }
     try {
@@ -165,7 +166,7 @@ class AdminAddingShopPage extends StatelessWidget {
       "email": emailController.text,
       "password": passwordController.text,
       "claim": claim,
-      "imageUrl" : imageUrl
+      "imageUrl": imageUrl
     }).then((res) {
       print(res.data);
     }).catchError((e) {

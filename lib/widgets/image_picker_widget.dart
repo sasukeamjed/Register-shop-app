@@ -50,7 +50,7 @@ class _PickImageState extends State<PickImage> {
         //maxHeight: 50.0,
         //maxWidth: 50.0,
       );
-      print("You selected camera image : " + imageFile.path);
+//      print("You selected camera image : " + imageFile.path);
       setState(() {
         widget.imagePickerFunction(imageFile);
       });
