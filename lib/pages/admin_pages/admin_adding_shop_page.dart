@@ -84,7 +84,8 @@ class AdminAddingShopPage extends StatelessWidget {
                         shopName: shopNameController.text,
                         idToken: db.userInstance.idToken)
                     .then((data) async {
-                  await createShop(db.claim, imageUrl: data["imageUrl"]);
+                      print(data);
+//                  await createShop(db.claim, imageUrl: data["imageUrl"]);
                 });
               },
             ),

@@ -99,6 +99,7 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
     busboy.on('finish', () => {
       const bucket = gcs.bucket('fir-auth-test-a160f.appspot.com');
       const id = uuid();
+      console.log('this is the uid:' + id);
       let imagePath = 'images/' + shopName + '/' + shopName + '-' + id + '-' + uploadData.name;
       if (oldImagePath) {
         imagePath = oldImagePath;
@@ -113,7 +114,8 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
             firebaseStorageDownloadToken: id
           }
         });
-      }).then(() => {
+      }).then((res) => {
+        console.log(res[0]);
         return res.status(201).json({
           imageUrl: 'https://firebasestorage.googleapis.com/v0/b/' + bucket.name + '/o/' + encodeURIComponent(imagePath) + '?alt=media&token=' + id,
           imagePath: imagePath
