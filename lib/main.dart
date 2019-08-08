@@ -52,9 +52,9 @@ class AuthPage extends StatelessWidget {
         future: db.create(authUser),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.done){
-            print(parseJwt(db.userInstance.idToken));
+            print('main.dart line 55: ${parseJwt(db.userInstance.idToken)}');
             if(parseJwt(db.userInstance.idToken)['claim'] == 'Admin'){
-              print('this is the idToken: ' + db.userInstance.idToken);
+//              print('main.dart line 57: this is the idToken: ' + db.userInstance.idToken);
               return AdminMain();
             }else if(parseJwt(db.userInstance.idToken)['claim'] == 'Shop'){
               return Shop();

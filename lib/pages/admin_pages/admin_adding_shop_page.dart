@@ -9,7 +9,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 import 'package:register_shop_app/db/db_class.dart';
-import 'package:register_shop_app/widgets/claim_radio_buttons.dart';
 import 'package:register_shop_app/widgets/image_picker_widget.dart';
 
 import 'package:mime/mime.dart';
@@ -57,6 +56,7 @@ class AdminAddingShopPage extends StatelessWidget {
               decoration: InputDecoration(labelText: 'Password'),
             ),
             TextField(
+              //ToDo: add +968 before the number
               controller: phoneController,
               decoration: InputDecoration(labelText: 'Phone Number'),
             ),
@@ -70,23 +70,13 @@ class AdminAddingShopPage extends StatelessWidget {
             SizedBox(
               width: 10.0,
             ),
-            ClaimRadioButtons(),
             PickImage(
               imagePickerFunction: setImageFile,
             ),
             RaisedButton(
               child: Text('Add a new Shop ?!'),
               onPressed: () async {
-//                fetchUserByUid('1ZXgy5DtuaToQFwEv0gDicmjMPg2');
-//                await addUser(db.claim);
-                uploadImage(
-                        image: imageFile,
-                        shopName: shopNameController.text,
-                        idToken: db.userInstance.idToken)
-                    .then((data) async {
-                      print(data);
-//                  await createShop(db.claim, imageUrl: data["imageUrl"]);
-                });
+                createShop(idToken: db.userInstance.idToken);
               },
             ),
           ],
@@ -102,25 +92,6 @@ class AdminAddingShopPage extends StatelessWidget {
     } else {
       print('image file is not a null');
     }
-  }
-
-  addUser(claim) async {
-    CloudFunctions.instance.getHttpsCallable(functionName: "addUser").call({
-      "email": emailController.text,
-      "password": emailController.text
-    }).then((res) {
-      print('Done creating a user');
-      addAdminRole(emailController.text, claim);
-    }).catchError((e) {
-      print(e);
-    });
-    // try {
-    //   await FirebaseAuth.instance.createUserWithEmailAndPassword(
-    //       email: userController.text, password: passwordController.text);
-    //   print('Sign up is Succesful');
-    // } catch (e) {
-    //   print('Sign up failed with following error $e');
-    // }
   }
 
   Future<Map<String, dynamic>> uploadImage(
@@ -149,7 +120,7 @@ class AdminAddingShopPage extends StatelessWidget {
       final streamedResponse = await imageUploadRequest.send();
       final response = await http.Response.fromStream(streamedResponse);
       if (response.statusCode != 200 && response.statusCode != 201) {
-        print('Something went wrong!');
+        print('Admin page line 123: Something went wrong!');
         print(json.decode(response.body));
         return null;
       }
@@ -162,14 +133,38 @@ class AdminAddingShopPage extends StatelessWidget {
     }
   }
 
-  createShop(claim, {String imageUrl}) async {
+  createShop({String idToken}) async {
+    //ToDo: Add Authrization token on creating shop method NOW +++++++++++++++++++++++++++++++
     CloudFunctions.instance.getHttpsCallable(functionName: "createShop").call({
+      "idToken" : idToken,
       "email": emailController.text,
       "password": passwordController.text,
-      "claim": claim,
-      "imageUrl": imageUrl
+      "shopName": shopNameController.text,
+      "claim": "shop",
+    }).then((res) async {
+      print('Admin page line 143: ${res.data}');
+      print('Admin page line 144: ${res.data['uid']}');
+      if(res.data['uid'] == null){
+        return throw(res.data);
+      }else{
+        return uploadImage(
+            image: imageFile,
+            shopName: shopNameController.text,
+            idToken: idToken);
+      }
+    }).then((data){
+      print('Admin page line 154: $data');
+//      return updatePhotoUrl(data['uid'], '');
+    }).catchError((e) {
+      print('Admin page line 157: $e');
+    });
+  }
+
+  updatePhotoUrl(String uid,String photoUrl){
+    return CloudFunctions.instance.getHttpsCallable(functionName: "updateData").call({
+      "uid": uid,
     }).then((res) {
-      print(res.data);
+      print('Admin page line 158: ${res.data}');
     }).catchError((e) {
       print(e);
     });

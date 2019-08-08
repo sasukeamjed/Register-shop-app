@@ -31,8 +31,8 @@ class _PickImageState extends State<PickImage> {
       try {
         imageFile = await ImagePicker.pickImage(
           source: ImageSource.gallery,
-          // maxHeight: 50.0,
-          // maxWidth: 50.0,
+           maxHeight: 300.0,
+           maxWidth: 500.0,
         );
         print("You selected gallery image : " + imageFile.path);
         setState(() {
@@ -47,8 +47,8 @@ class _PickImageState extends State<PickImage> {
     imageSelectorCamera() async {
       imageFile = await ImagePicker.pickImage(
         source: ImageSource.camera,
-        //maxHeight: 50.0,
-        //maxWidth: 50.0,
+        maxHeight: 300.0,
+        maxWidth: 500.0,
       );
 //      print("You selected camera image : " + imageFile.path);
       setState(() {

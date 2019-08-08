@@ -9,6 +9,7 @@ const spawn = require('child-process-promise').spawn;
 const uuid = require('uuid/v4');
 
 admin.initializeApp({ credential: admin.credential.cert(require('./fir-auth-test-a160f-firebase-adminsdk-ff597-38849e6620.json')) });
+// admin.initializeApp(functions.config().firebase);
 
 const gcconfig = {
   projectId: "fir-auth-test-a160f",
@@ -37,29 +38,62 @@ const gcs = admin.storage();
 // });
 
 exports.createShop = functions.https.onCall(async (data, context) => {
-  try {
-    const newUser = await admin.auth().createUser({
+  return admin.auth().verifyIdToken(data['idToken']).then((decodedToken) => {
+    console.log(decodedToken);
+    if (decodedToken.claim !== 'Admin') {
+      throw Error('UnAuthorized');
+    }
+
+    return admin.auth().createUser({
       email: data['email'],
-      phoneNumber: data['phoneNumber'],
+      phoneNumber: '+96895868408',
       emailVerified: false,
       password: data['password'],
       displayName: data['shopName'],
-      photoURL: data['imageUrl'],
+      photoURL: 'https://images.immediate.co.uk/production/volatile/sites/4/2009/07/GettyImages-931270318-43ab672.jpg?quality=45&resize=960,413',
       disabled: false
     });
 
-    const claims = {
-      claim: data['claim']
-    };
-
-    await admin.auth().setCustomUserClaims(newUser.uid, claims);
-
-    console.log('user was created: ' + newUser);
+  }).then((newUser) => {
+    console.log('user was created with the following uid:' + newUser.uid);
     return newUser;
-  } catch (error) {
-    console.log(error);
-  }
+  }).catch(e => e);
 
+});
+
+// On sign up.
+exports.processSignUp = functions.auth.user().onCreate(event => {
+  const user = event.data; // The Firebase user.
+  // Check if user meets role criteria.
+  if (user.email) {
+    const customClaims = {
+      claim: 'admin',
+    };
+    // Set custom user claims on this newly created user.
+    return admin.auth().setCustomUserClaims(user.uid, customClaims)
+      .then(() => {
+        // Update real-time database to notify client to force refresh.
+        const metadataRef = admin.database().ref("metadata/" + user.uid);
+        // Set the refresh time to the current UTC timestamp.
+        // This will be captured on the client to force a token refresh.
+        console.log('this is the user claims: ' + event.data);
+        return metadataRef.set({ refreshTime: new Date().getTime() });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+});
+
+exports.updateData = functions.https.onCall(async (data, context) => {
+  try {
+    await admin.auth().updateUser(data['uid'], {
+      photoURL: 'http://www.example.com/12345678/photo.png',
+    });
+  }
+  catch (e) {
+    return e;
+  }
 });
 
 exports.uploadFile = functions.https.onRequest((req, res) => {
@@ -114,8 +148,7 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
             firebaseStorageDownloadToken: id
           }
         });
-      }).then((res) => {
-        console.log(res[0]);
+      }).then(() => {
         return res.status(201).json({
           imageUrl: 'https://firebasestorage.googleapis.com/v0/b/' + bucket.name + '/o/' + encodeURIComponent(imagePath) + '?alt=media&token=' + id,
           imagePath: imagePath
@@ -133,41 +166,45 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
   });
 });
 
-exports.onFileChange = functions.storage.object().onFinalize(async (event) => {
-  const bucket = event.bucket;
-  const contentType = event.contentType;
-  const filePath = event.name;
 
-  const shopName = path.basename(filePath).split('-')[0];
-  // console.log(shopName);
 
-  if (path.basename(filePath).startsWith('resized-')) {
-    console.log('We already renamed that file!');
-    return;
-  }
+// exports.onFileChange = functions.storage.object().onFinalize(async (event) => {
+//   const bucket = event.bucket;
+//   const contentType = event.contentType;
+//   const filePath = event.name;
 
-  const destBucket = gcs.bucket(bucket);
-  const tempFilePath = path.join(os.tmpdir(), path.basename(filePath));
+//   const shopName = path.basename(filePath).split('-')[0];
+//   // console.log(shopName);
 
-  const metadata = {
-    contentType: contentType
-  };
+//   if (path.basename(filePath).startsWith('resized-')) {
+//     console.log('We already renamed that file!');
+//     return;
+//   }
 
-  return destBucket.file(filePath).download({
-    destination: tempFilePath
-  }).then(() => {
-    return destBucket.file(filePath).delete();
-  }).then(() => {
-    return spawn('convert', [tempFilePath, '-resize', '500x500', tempFilePath]);
-  }).then(() => {
-    return destBucket.upload(tempFilePath, {
-      destination: 'images/' + shopName + '/' + 'resized-' + path.basename(filePath),
-      metadata: metadata
-    });
-  }).catch(e => {
-    console.log('there is an error: ' + e);
-  });
-});
+//   const destBucket = gcs.bucket(bucket);
+//   const tempFilePath = path.join(os.tmpdir(), path.basename(filePath));
+
+//   const metadata = {
+//     contentType: contentType
+//   };
+
+//   return destBucket.file(filePath).download({
+//     destination: tempFilePath
+//   })
+//     .then(() => {
+//       return destBucket.file(filePath).delete();
+//     })
+//     .then(() => {
+//       return spawn('convert', [tempFilePath, '-resize', '500x500', tempFilePath]);
+//     }).then(() => {
+//       return destBucket.upload(tempFilePath, {
+//         destination: 'images/' + shopName + '/' + 'resized-' + path.basename(filePath),
+//         metadata: metadata
+//       });
+//     }).catch(e => {
+//       console.log('there is an error: ' + e);
+//     });
+// });
 
 // exports.storeImage = functions.https.onRequest((req, res) => {
 //   return cors(req, res, () => {
