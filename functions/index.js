@@ -38,6 +38,7 @@ const gcs = admin.storage();
 // });
 
 exports.createShop = functions.https.onCall(async (data, context) => {
+  var user;
   return admin.auth().verifyIdToken(data['idToken']).then((decodedToken) => {
     console.log(decodedToken);
     if (decodedToken.claim !== 'Admin') {
@@ -54,36 +55,40 @@ exports.createShop = functions.https.onCall(async (data, context) => {
       disabled: false
     });
 
-  }).then((newUser) => {
+  }).then(async (newUser) => {
     console.log('user was created with the following uid:' + newUser.uid);
-    return newUser;
+    await admin.auth().setCustomUserClaims(newUser.uid, { claim: 'Admin' });
+    user = newUser;
+  }).then(() => {
+    console.log('user with cusotmn claims suposedly was created!!! and hope it worked');
+    return user;
   }).catch(e => e);
 
 });
 
 // On sign up.
-exports.processSignUp = functions.auth.user().onCreate(event => {
-  const user = event.data; // The Firebase user.
-  // Check if user meets role criteria.
-  if (user.email) {
-    const customClaims = {
-      claim: 'admin',
-    };
-    // Set custom user claims on this newly created user.
-    return admin.auth().setCustomUserClaims(user.uid, customClaims)
-      .then(() => {
-        // Update real-time database to notify client to force refresh.
-        const metadataRef = admin.database().ref("metadata/" + user.uid);
-        // Set the refresh time to the current UTC timestamp.
-        // This will be captured on the client to force a token refresh.
-        console.log('this is the user claims: ' + event.data);
-        return metadataRef.set({ refreshTime: new Date().getTime() });
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-});
+// exports.processSignUp = functions.auth.user().onCreate(event => {
+//   const user = event.data; // The Firebase user.
+//   // Check if user meets role criteria.
+//   if (user.email) {
+//     const customClaims = {
+//       claim: 'admin',
+//     };
+//     // Set custom user claims on this newly created user.
+//     return admin.auth().setCustomUserClaims(user.uid, customClaims)
+//       .then(() => {
+//         // Update real-time database to notify client to force refresh.
+//         const metadataRef = admin.database().ref("metadata/" + user.uid);
+//         // Set the refresh time to the current UTC timestamp.
+//         // This will be captured on the client to force a token refresh.
+//         console.log('this is the user claims: ' + user.customClaims);
+//         return metadataRef.set({ refreshTime: new Date().getTime() });
+//       })
+//       .catch(error => {
+//         console.log(error);
+//       });
+//   }
+// });
 
 exports.updateData = functions.https.onCall(async (data, context) => {
   try {
