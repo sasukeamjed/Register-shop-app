@@ -47,11 +47,11 @@ exports.createShop = functions.https.onCall(async (data, context) => {
 
     return admin.auth().createUser({
       email: data['email'],
-      phoneNumber: '+96895868408',
+      phoneNumber: '+968' + data['phoneNumber'],
       emailVerified: false,
       password: data['password'],
       displayName: data['shopName'],
-      photoURL: 'https://images.immediate.co.uk/production/volatile/sites/4/2009/07/GettyImages-931270318-43ab672.jpg?quality=45&resize=960,413',
+      photoURL: 'https://www.tenforums.com/geek/gars/images/2/types/thumb__ser.png',
       disabled: false
     });
 
@@ -90,16 +90,16 @@ exports.createShop = functions.https.onCall(async (data, context) => {
 //   }
 // });
 
-exports.updateData = functions.https.onCall(async (data, context) => {
-  try {
-    await admin.auth().updateUser(data['uid'], {
-      photoURL: 'http://www.example.com/12345678/photo.png',
-    });
-  }
-  catch (e) {
-    return e;
-  }
-});
+// exports.updateData = functions.https.onCall(async (data, context) => {
+//   try {
+//     await admin.auth().updateUser(data['uid'], {
+//       photoURL: 'http://www.example.com/12345678/photo.png',
+//     });
+//   }
+//   catch (e) {
+//     return e;
+//   }
+// });
 
 exports.uploadFile = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
@@ -269,27 +269,27 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
 //     return admin.auth.createUser()
 // });
 
-// exports.getAllUsers = functions.https.onCall((data, context) => {
-//   function listAllUsers(nextPageToken) {
-//     // List batch of users, 1000 at a time.
-//     return admin.auth().listUsers(1000, nextPageToken)
-//       .then(function (listUsersResult) {
-//         listUsersResult.users.forEach(function (userRecord) {
-//           console.log('user', userRecord.toJSON());
-//         });
-//         if (listUsersResult.pageToken) {
-//           // List next batch of users.
-//           listAllUsers(listUsersResult.pageToken);
-//         }
-//         return listUsersResult.users;
-//       })
-//       .catch(function (error) {
-//         console.log('Error listing users:', error);
-//       });
-//   }
-//   // Start listing users from the beginning, 1000 at a time.
-//   return listAllUsers();
-// });
+exports.getAllUsers = functions.https.onCall((data, context) => {
+  function listAllUsers(nextPageToken) {
+    // List batch of users, 1000 at a time.
+    return admin.auth().listUsers(1000, nextPageToken)
+      .then(function (listUsersResult) {
+        listUsersResult.users.forEach(function (userRecord) {
+          console.log('user', userRecord.toJSON());
+        });
+        if (listUsersResult.pageToken) {
+          // List next batch of users.
+          listAllUsers(listUsersResult.pageToken);
+        }
+        return listUsersResult.users;
+      })
+      .catch(function (error) {
+        console.log('Error listing users:', error);
+      });
+  }
+  // Start listing users from the beginning, 1000 at a time.
+  return listAllUsers();
+});
 
 
 

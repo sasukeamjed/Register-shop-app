@@ -77,6 +77,13 @@ class AdminAddingShopPage extends StatelessWidget {
               child: Text('Add a new Shop ?!'),
               onPressed: () async {
                 createShop(idToken: db.userInstance.idToken);
+                fetchAllUsers();
+              },
+            ),
+            RaisedButton(
+              child: Text('Get All User ?!'),
+              onPressed: () async {
+                fetchAllUsers();
               },
             ),
           ],
@@ -134,12 +141,13 @@ class AdminAddingShopPage extends StatelessWidget {
   }
 
   createShop({String idToken}) async {
-    //ToDo: Add Authrization token on creating shop method NOW +++++++++++++++++++++++++++++++
+
     CloudFunctions.instance.getHttpsCallable(functionName: "createShop").call({
       "idToken" : idToken,
       "email": emailController.text,
       "password": passwordController.text,
       "shopName": shopNameController.text,
+      "phoneNumber": phoneController.text,
       "claim": "shop",
     }).then((res) async {
       print('Admin page line 143: ${res.data}');
@@ -171,7 +179,7 @@ class AdminAddingShopPage extends StatelessWidget {
   }
 
   fetchUserByUid(uid) async {
-    CloudFunctions.instance
+    return CloudFunctions.instance
         .getHttpsCallable(functionName: "fetchUserByUid")
         .call({"uid": uid}).then((res) {
       print(res.data['email']);
@@ -182,12 +190,12 @@ class AdminAddingShopPage extends StatelessWidget {
   }
 
   fetchAllUsers() async {
-    CloudFunctions.instance
+    return CloudFunctions.instance
         .getHttpsCallable(functionName: 'getAllUsers')
         .call()
         .then((res) {
       print('function getAllUsers is called');
-      print(res);
+      print(res.data[4]);
     }).catchError((e) {
       print(e);
     });
