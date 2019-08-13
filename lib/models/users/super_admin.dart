@@ -1,5 +1,8 @@
-import 'package:register_shop_app/models/users/user.dart';
+class SuperAdmin{
+  final String uid;
+  final String email;
+  final String claimType;
+  final String phoneNumber;
 
-class SuperAdmin extends User{
-  
+  SuperAdmin({this.uid, this.email, this.claimType, this.phoneNumber});
 }

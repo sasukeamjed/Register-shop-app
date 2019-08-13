@@ -66,40 +66,7 @@ exports.createShop = functions.https.onCall(async (data, context) => {
 
 });
 
-// On sign up.
-// exports.processSignUp = functions.auth.user().onCreate(event => {
-//   const user = event.data; // The Firebase user.
-//   // Check if user meets role criteria.
-//   if (user.email) {
-//     const customClaims = {
-//       claim: 'admin',
-//     };
-//     // Set custom user claims on this newly created user.
-//     return admin.auth().setCustomUserClaims(user.uid, customClaims)
-//       .then(() => {
-//         // Update real-time database to notify client to force refresh.
-//         const metadataRef = admin.database().ref("metadata/" + user.uid);
-//         // Set the refresh time to the current UTC timestamp.
-//         // This will be captured on the client to force a token refresh.
-//         console.log('this is the user claims: ' + user.customClaims);
-//         return metadataRef.set({ refreshTime: new Date().getTime() });
-//       })
-//       .catch(error => {
-//         console.log(error);
-//       });
-//   }
-// });
 
-// exports.updateData = functions.https.onCall(async (data, context) => {
-//   try {
-//     await admin.auth().updateUser(data['uid'], {
-//       photoURL: 'http://www.example.com/12345678/photo.png',
-//     });
-//   }
-//   catch (e) {
-//     return e;
-//   }
-// });
 
 exports.uploadFile = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
@@ -172,6 +139,62 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
 });
 
 
+exports.getAllUsers = functions.https.onCall((data, context) => {
+  function listAllUsers(nextPageToken) {
+    // List batch of users, 1000 at a time.
+    return admin.auth().listUsers(1000, nextPageToken)
+      .then(function (listUsersResult) {
+        listUsersResult.users.forEach(function (userRecord) {
+          console.log('user', userRecord.toJSON());
+        });
+        if (listUsersResult.pageToken) {
+          // List next batch of users.
+          listAllUsers(listUsersResult.pageToken);
+        }
+        return listUsersResult.users;
+      })
+      .catch(function (error) {
+        console.log('Error listing users:', error);
+      });
+  }
+  // Start listing users from the beginning, 1000 at a time.
+  return listAllUsers();
+});
+
+// On sign up.
+// exports.processSignUp = functions.auth.user().onCreate(event => {
+//   const user = event.data; // The Firebase user.
+//   // Check if user meets role criteria.
+//   if (user.email) {
+//     const customClaims = {
+//       claim: 'admin',
+//     };
+//     // Set custom user claims on this newly created user.
+//     return admin.auth().setCustomUserClaims(user.uid, customClaims)
+//       .then(() => {
+//         // Update real-time database to notify client to force refresh.
+//         const metadataRef = admin.database().ref("metadata/" + user.uid);
+//         // Set the refresh time to the current UTC timestamp.
+//         // This will be captured on the client to force a token refresh.
+//         console.log('this is the user claims: ' + user.customClaims);
+//         return metadataRef.set({ refreshTime: new Date().getTime() });
+//       })
+//       .catch(error => {
+//         console.log(error);
+//       });
+//   }
+// });
+
+// exports.updateData = functions.https.onCall(async (data, context) => {
+//   try {
+//     await admin.auth().updateUser(data['uid'], {
+//       photoURL: 'http://www.example.com/12345678/photo.png',
+//     });
+//   }
+//   catch (e) {
+//     return e;
+//   }
+// });
 
 // exports.onFileChange = functions.storage.object().onFinalize(async (event) => {
 //   const bucket = event.bucket;
@@ -268,28 +291,6 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
 // exports.createUser = functions.https.onCall((data, context)=>{
 //     return admin.auth.createUser()
 // });
-
-exports.getAllUsers = functions.https.onCall((data, context) => {
-  function listAllUsers(nextPageToken) {
-    // List batch of users, 1000 at a time.
-    return admin.auth().listUsers(1000, nextPageToken)
-      .then(function (listUsersResult) {
-        listUsersResult.users.forEach(function (userRecord) {
-          console.log('user', userRecord.toJSON());
-        });
-        if (listUsersResult.pageToken) {
-          // List next batch of users.
-          listAllUsers(listUsersResult.pageToken);
-        }
-        return listUsersResult.users;
-      })
-      .catch(function (error) {
-        console.log('Error listing users:', error);
-      });
-  }
-  // Start listing users from the beginning, 1000 at a time.
-  return listAllUsers();
-});
 
 
 
