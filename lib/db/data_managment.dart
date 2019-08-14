@@ -1,55 +1,76 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
-class AdminManagement {
+import 'package:register_shop_app/constants/claims_types.dart';
 
-  void addSuperAdmin(){
+class SuperAdminManagement {
+  void addUser(
+      {@required ClaimsType claim,
+      @required String email,
+      @required String password,
+      @required String phoneNumber}) {
+    if (claim == ClaimsType.Admin) {
+      addAdmin();
+    } else if (claim == ClaimsType.ShopOwner) {
+      addShopOwner();
+    } else if (claim == ClaimsType.Customer) {
+      addCustomer();
+    }
+  }
+
+  void addAdmin({
+    @required ClaimsType claim,
+    @required String email,
+    @required String password,
+    @required String phoneNumber,
+    String fullName,
+    String displayName,
+  }) {
 
   }
 
-  void addAdmin(){
+  void addShopOwner() {}
 
-  }
+  void addCustomer() {}
 
-  void deleteAdmin(){
+  void deleteAdmin() {}
 
-  }
+  void deleteShopOwner() {}
+
+  void fetchAllShopsOwners() {}
 }
 
-class ShopsManagement{
-  void addShop(){
+class ShopsManagement {
+  void addProduct() {}
 
-  }
+  void deleteProduct() {}
 
-  void deleteShop(){
+  void deleteProducts() {}
 
-  }
-
-  void fetchAllShops(){
-
-  }
+  void fetchAllProducts() {}
 }
 
-class ProductsManagement{
-  void addProduct(){
-
-  }
-
-  void deleteProduct(){
-
-  }
-
-  void fetchAllProducts(){
-
-  }
-}
-
-class UsersManagement{
-  void addUser(){
-
-  }
-
-  void deleteUser(){
-    
-  }
-}
+//class ProductsManagement{
+//  void addProduct(){
+//
+//  }
+//
+//  void deleteProduct(){
+//
+//  }
+//
+//  void fetchAllProducts(){
+//
+//  }
+//}
+//
+//class UsersManagement{
+//  void addUser(){
+//
+//  }
+//
+//  void deleteUser(){
+//
+//  }
+//}
