@@ -37,7 +37,7 @@ const gcs = admin.storage();
 //   });
 // });
 
-exports.createShop = functions.https.onCall(async (data, context) => {
+exports.createUser = functions.https.onCall(async (data, context) => {
   var user;
   return admin.auth().verifyIdToken(data['idToken']).then((decodedToken) => {
     console.log(decodedToken);
@@ -66,7 +66,56 @@ exports.createShop = functions.https.onCall(async (data, context) => {
 
 });
 
+const addAdmin = async (
+  claim,
+  email,
+  password,
+  phoneNumber,
+  fullName,
+  displayName,
+) => {
+  
+  return admin.auth().createUser({
+    email: email,
+    phoneNumber: '+968' + phoneNumber,
+    emailVerified: false,
+    password: password,
+    displayName: displayName,
+    photoURL: 'https://www.tenforums.com/geek/gars/images/2/types/thumb__ser.png',
+    disabled: false
+  }).then(data =>{
+    console.log(data);
+  }).catch(e => {
+    console.log(e);
+  });
 
+};
+
+const addShopOwner = (
+  claim,
+  shopName,
+  email,
+  password,
+  phoneNumber,
+  fullName,
+  displayName,
+) =>{
+
+};
+
+const addCustomer = async (
+ email,
+  claimType,
+  phoneNumber,
+  userDisplayName,
+  userRealName,
+  userFamilyName,
+  country,
+  city,
+  village,
+) =>{
+
+}
 
 exports.uploadFile = functions.https.onRequest((req, res) => {
   cors(req, res, () => {

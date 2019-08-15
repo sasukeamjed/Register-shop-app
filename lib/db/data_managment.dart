@@ -19,7 +19,7 @@ class SuperAdminManagement {
     }
   }
 
-  void addAdmin({
+  static Future<void> addAdmin({
     @required ClaimsType claim,
     @required String email,
     @required String password,
@@ -30,9 +30,27 @@ class SuperAdminManagement {
 
   }
 
-  void addShopOwner() {}
+  void addShopOwner({
+    @required ClaimsType claim,
+    @required String shopName,
+    @required String email,
+    @required String password,
+    @required String phoneNumber,
+    @required String fullName,
+    String displayName,
+  }) {}
 
-  void addCustomer() {}
+  void addCustomer({
+    @required String email,
+    @required String claimType,
+    @required String phoneNumber,
+    @required String userDisplayName,
+    @required String userRealName,
+    @required String userFamilyName,
+    @required String country,
+    @required String city,
+    @required String village,
+  }) {}
 
   void deleteAdmin() {}
 
