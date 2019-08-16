@@ -41,19 +41,19 @@ exports.createUser = functions.https.onCall(async (data, context) => {
   var user;
   return admin.auth().verifyIdToken(data['idToken']).then((decodedToken) => {
     console.log(decodedToken);
-    if (decodedToken.claim !== 'Admin') {
-      throw Error('UnAuthorized');
+    if (decodedToken.claim === 'Admin') {
+      return addShopOwner(null, 'wrood shop', 'sasukeamjed@gmail.com', '123456', '95868408', 'amjed yaser', 'sasukeamjed');
     }
 
-    return admin.auth().createUser({
-      email: data['email'],
-      phoneNumber: '+968' + data['phoneNumber'],
-      emailVerified: false,
-      password: data['password'],
-      displayName: data['shopName'],
-      photoURL: 'https://www.tenforums.com/geek/gars/images/2/types/thumb__ser.png',
-      disabled: false
-    });
+    // return admin.auth().createUser({
+    //   email: data['email'],
+    //   phoneNumber: '+968' + data['phoneNumber'],
+    //   emailVerified: false,
+    //   password: data['password'],
+    //   displayName: data['shopName'],
+    //   photoURL: 'https://www.tenforums.com/geek/gars/images/2/types/thumb__ser.png',
+    //   disabled: false
+    // });
 
   }).then(async (newUser) => {
     console.log('user was created with the following uid:' + newUser.uid);
@@ -100,6 +100,16 @@ const addShopOwner = (
   fullName,
   displayName,
 ) =>{
+
+  return admin.auth().createUser({
+    email: email,
+    phoneNumber: '+968' + phoneNumber,
+    emailVerified: false,
+    password: password,
+    displayName: displayName,
+    photoURL: 'https://www.tenforums.com/geek/gars/images/2/types/thumb__ser.png',
+    disabled: false
+  });
 
 };
 
