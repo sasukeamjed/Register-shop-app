@@ -41,6 +41,7 @@ exports.createUser = functions.https.onCall(async (data, context) => {
   var user;
   return admin.auth().verifyIdToken(data['idToken']).then((decodedToken) => {
     console.log(decodedToken);
+
     if (decodedToken.claim === 'Admin') {
       return addShopOwner(null, 'wrood shop', 'sasukeamjed@gmail.com', '123456', '95868408', 'amjed yaser', 'sasukeamjed');
     }
@@ -74,7 +75,7 @@ const addAdmin = async (
   fullName,
   displayName,
 ) => {
-  
+
   return admin.auth().createUser({
     email: email,
     phoneNumber: '+968' + phoneNumber,
@@ -83,7 +84,7 @@ const addAdmin = async (
     displayName: displayName,
     photoURL: 'https://www.tenforums.com/geek/gars/images/2/types/thumb__ser.png',
     disabled: false
-  }).then(data =>{
+  }).then(data => {
     console.log(data);
   }).catch(e => {
     console.log(e);
@@ -99,7 +100,7 @@ const addShopOwner = (
   phoneNumber,
   fullName,
   displayName,
-) =>{
+) => {
 
   return admin.auth().createUser({
     email: email,
@@ -114,7 +115,7 @@ const addShopOwner = (
 };
 
 const addCustomer = async (
- email,
+  email,
   claimType,
   phoneNumber,
   userDisplayName,
@@ -123,7 +124,7 @@ const addCustomer = async (
   country,
   city,
   village,
-) =>{
+) => {
 
 }
 

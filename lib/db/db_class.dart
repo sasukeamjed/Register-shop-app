@@ -18,7 +18,7 @@ class Db with ChangeNotifier {
   Future<void> login(email, password)async{
     try{
       FirebaseUser user = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-      await create(user);
+      await createUser(user);
       print('LogIn is Succesful');
     }catch(e){
       print('log in failed with following error $e');
@@ -29,7 +29,7 @@ class Db with ChangeNotifier {
   Future<void> signUp(email, password)async{
     try{
       FirebaseUser user = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-      await create(user);
+      await createUser(user);
       print('Sign up is Succesful');
     }catch(e){
       print('Sign up failed with following error $e');
@@ -47,7 +47,7 @@ class Db with ChangeNotifier {
     }
   }
 
-  Future<User> create(FirebaseUser user) async{
+  Future<User> createUser(FirebaseUser user) async{
 
       return _userInstance =  User(
           id: user.uid,

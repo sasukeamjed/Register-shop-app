@@ -40,21 +40,21 @@ class MyApp extends StatelessWidget {
 
 
 class AuthPage extends StatelessWidget {
+//  FirebaseUser user = FirebaseUser().getIdToken().asStream();
 
   @override
   Widget build(BuildContext context) {
     var db = Provider.of<Db>(context);
     var authUser = Provider.of<FirebaseUser>(context);
 
-
     if (authUser != null) {
       return FutureBuilder<User>(
-        future: db.create(authUser),
+        future: db.createUser(authUser),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.done){
-            print('main.dart line 55: ${parseJwt(db.userInstance.idToken)}');
+            print('main.dart line 56: ${parseJwt(db.userInstance.idToken)}');
             if(parseJwt(db.userInstance.idToken)['claim'] == 'Admin'){
-//              print('main.dart line 57: this is the idToken: ' + db.userInstance.idToken);
+              print('main.dart line 57: this is the idToken: ' + db.userInstance.idToken);
               return AdminMain();
             }else if(parseJwt(db.userInstance.idToken)['claim'] == 'Shop'){
               return Shop();
