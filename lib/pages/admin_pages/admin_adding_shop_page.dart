@@ -143,29 +143,46 @@ class AdminAddingShopPage extends StatelessWidget {
 
     CloudFunctions.instance.getHttpsCallable(functionName: "createUser").call({
       "idToken" : idToken,
-      "email": emailController.text,
-      "password": passwordController.text,
-      "shopName": shopNameController.text,
+      "shopName": 'test',
+      "email": 'sasukeamjed@gmail.com',
+      "password": '123456',
       "phoneNumber": phoneController.text,
-      "claim": "shop",
+      "imageFile": imageFile,
     }).then((res) async {
       print('Admin page line 143: ${res.data}');
       print('Admin page line 144: ${res.data['uid']}');
-      if(res.data['uid'] == null){
-        return throw(res.data);
-      }else{
-//        return uploadImage(
-//            image: imageFile,
-//            shopName: shopNameController.text,
-//            idToken: idToken);
-      }
-    }).then((data){
-      print('Admin page line 154: $data');
-//      return updatePhotoUrl(data['uid'], '');
     }).catchError((e) {
-      print('Admin page line 157: $e');
+      print('Admin page line 155: $e');
     });
   }
+
+//  createShop({String idToken}) async {
+//
+//    CloudFunctions.instance.getHttpsCallable(functionName: "createUser").call({
+//      "idToken" : idToken,
+//      "email": emailController.text,
+//      "password": passwordController.text,
+//      "shopName": shopNameController.text,
+//      "phoneNumber": phoneController.text,
+//      "claim": "shop",
+//    }).then((res) async {
+//      print('Admin page line 143: ${res.data}');
+//      print('Admin page line 144: ${res.data['uid']}');
+//      if(res.data['uid'] == null){
+//        return throw(res.data);
+//      }else{
+////        return uploadImage(
+////            image: imageFile,
+////            shopName: shopNameController.text,
+////            idToken: idToken);
+//      }
+//    }).then((data){
+//      print('Admin page line 154: $data');
+////      return updatePhotoUrl(data['uid'], '');
+//    }).catchError((e) {
+//      print('Admin page line 157: $e');
+//    });
+//  }
 
   updatePhotoUrl(String uid,String photoUrl){
     return CloudFunctions.instance.getHttpsCallable(functionName: "updateData").call({

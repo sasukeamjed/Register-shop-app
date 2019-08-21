@@ -53,7 +53,7 @@ class LoginPage extends StatelessWidget {
                   RaisedButton(
                     child: Text('Sign Up'),
                     onPressed: () async {
-                      await db.signUp(userController.text, passwordController.text);
+//                      await db.signUp(userController.text, passwordController.text);
                     },
                   ),
                 ],

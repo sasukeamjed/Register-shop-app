@@ -3,21 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:register_shop_app/constants/claims_types.dart';
+import 'package:register_shop_app/models/shop.dart';
 
 class SuperAdminManagement {
-  void addUser(
-      {@required ClaimsType claim,
-      @required String email,
-      @required String password,
-      @required String phoneNumber}) {
-    if (claim == ClaimsType.Admin) {
-      addAdmin();
-    } else if (claim == ClaimsType.ShopOwner) {
-      addShopOwner();
-    } else if (claim == ClaimsType.Customer) {
-      addCustomer();
-    }
-  }
 
   static Future<void> addAdmin({
     @required ClaimsType claim,
@@ -27,22 +15,23 @@ class SuperAdminManagement {
     String fullName,
     String displayName,
   }) {
-
+    return null;
   }
 
-  void addShopOwner({
-    @required ClaimsType claim,
+  static void addShopOwner({
+    @required String idToken,
     @required String shopName,
     @required String email,
     @required String password,
     @required String phoneNumber,
     @required String fullName,
     String displayName,
-  }) {}
+  }) {
 
-  void addCustomer({
+  }
+
+  static void addCustomer({
     @required String email,
-    @required String claimType,
     @required String phoneNumber,
     @required String userDisplayName,
     @required String userRealName,
@@ -56,11 +45,15 @@ class SuperAdminManagement {
 
   void deleteShopOwner() {}
 
-  void fetchAllShopsOwners() {}
+  static List<Shop> fetchAllShopsOwners() {
+    return [];
+  }
 }
 
 class ShopsManagement {
-  void addProduct() {}
+  static void addProduct(@required String idToken,) {
+
+  }
 
   void deleteProduct() {}
 
@@ -69,26 +62,3 @@ class ShopsManagement {
   void fetchAllProducts() {}
 }
 
-//class ProductsManagement{
-//  void addProduct(){
-//
-//  }
-//
-//  void deleteProduct(){
-//
-//  }
-//
-//  void fetchAllProducts(){
-//
-//  }
-//}
-//
-//class UsersManagement{
-//  void addUser(){
-//
-//  }
-//
-//  void deleteUser(){
-//
-//  }
-//}

@@ -38,34 +38,16 @@ const gcs = admin.storage();
 // });
 
 exports.createUser = functions.https.onCall(async (data, context) => {
-  var user;
-  return admin.auth().verifyIdToken(data['idToken']).then((decodedToken) => {
-    console.log(decodedToken);
 
-    if (decodedToken.claim === 'Admin') {
-      return addShopOwner(null, 'wrood shop', 'sasukeamjed@gmail.com', '123456', '95868408', 'amjed yaser', 'sasukeamjed');
-    }
-
-    // return admin.auth().createUser({
-    //   email: data['email'],
-    //   phoneNumber: '+968' + data['phoneNumber'],
-    //   emailVerified: false,
-    //   password: data['password'],
-    //   displayName: data['shopName'],
-    //   photoURL: 'https://www.tenforums.com/geek/gars/images/2/types/thumb__ser.png',
-    //   disabled: false
-    // });
-
-  }).then(async (newUser) => {
-    console.log('user was created with the following uid:' + newUser.uid);
-    await admin.auth().setCustomUserClaims(newUser.uid, { claim: 'Admin' });
-    user = newUser;
-  }).then(() => {
-    console.log('user with cusotmn claims suposedly was created!!! and hope it worked');
-    return user;
-  }).catch(e => e);
+  if (data['idToken']) {
+    return addShopOwner(data['idToken'], data['shopName'], 'sasukeamjed@gmail.com', '123456', '95868408', '', '');
+  } else {
+    return addCustomer('fish@fish.com', '123456', '95868400', 'fishsan', '', '', 'oman', 'nizwa', 'marfa daris');
+  }
 
 });
+
+
 
 const addAdmin = async (
   claim,
@@ -93,30 +75,50 @@ const addAdmin = async (
 };
 
 const addShopOwner = (
-  claim,
+  idToken,
   shopName,
   email,
   password,
   phoneNumber,
-  fullName,
-  displayName,
+  firstName,
+  lastNmae,
 ) => {
+  var user;
 
-  return admin.auth().createUser({
-    email: email,
-    phoneNumber: '+968' + phoneNumber,
-    emailVerified: false,
-    password: password,
-    displayName: displayName,
-    photoURL: 'https://www.tenforums.com/geek/gars/images/2/types/thumb__ser.png',
-    disabled: false
-  });
+  return admin.auth().verifyIdToken(idToken).then((decodedToken) => {
+    console.log(decodedToken);
+
+    if (decodedToken.claim === 'Admin') {
+
+      return admin.auth().createUser({
+        email: email,
+        phoneNumber: '+968' + phoneNumber,
+        emailVerified: false,
+        password: password,
+        displayName: shopName,
+        photoURL: 'https://www.tenforums.com/geek/gars/images/2/types/thumb__ser.png',
+        disabled: false
+      });
+
+    } else {
+      throw Error('Unauthrized 49');
+    }
+
+  }).then(async (newUser) => {
+    console.log('user was created with the following uid:' + newUser.uid);
+    await admin.auth().setCustomUserClaims(newUser.uid, { claim: 'ShopOwner' });
+    user = newUser;
+  }).then(() => {
+    console.log('user with ShopOwner claim was created!!! and hope it worked');
+    return user;
+  }).catch(e => e);
+
 
 };
 
 const addCustomer = async (
   email,
-  claimType,
+  password,
   phoneNumber,
   userDisplayName,
   userRealName,
@@ -125,8 +127,47 @@ const addCustomer = async (
   city,
   village,
 ) => {
+  var user;
+
+  return admin.auth().createUser({
+    email: email,
+    phoneNumber: '+968' + phoneNumber,
+    emailVerified: false,
+    password: password,
+    displayName: userDisplayName,
+    photoURL: 'https://www.tenforums.com/geek/gars/images/2/types/thumb__ser.png',
+    disabled: false
+  }).then(async (newUser) => {
+    console.log('user was created with the following uid:' + newUser.uid);
+    await admin.auth().setCustomUserClaims(newUser.uid, { claim: 'Customer' });
+    user = newUser;
+  }).then(() => {
+    console.log('user with Customer claim was created!!! and hope it worked');
+    return user;
+  }).catch(e => e);
 
 }
+
+const uploadImage = async (file) => {
+
+  const bucket = gcs.bucket('fir-auth-test-a160f.appspot.com');
+  const id = uuid();
+
+  return bucket.upload(file, {
+    uploadType: 'media',
+    destination: imagePath,
+    metadata: {
+      metadata: uploadData.type,
+      firebaseStorageDownloadToken: id
+    }
+  }).then((res) => {
+    console.log(res);
+  }).catch((e) => {
+    console.log(e);
+  });
+
+
+};
 
 exports.uploadFile = functions.https.onRequest((req, res) => {
   cors(req, res, () => {

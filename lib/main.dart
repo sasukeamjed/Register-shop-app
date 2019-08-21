@@ -56,7 +56,7 @@ class AuthPage extends StatelessWidget {
             if(parseJwt(db.userInstance.idToken)['claim'] == 'Admin'){
               print('main.dart line 57: this is the idToken: ' + db.userInstance.idToken);
               return AdminMain();
-            }else if(parseJwt(db.userInstance.idToken)['claim'] == 'Shop'){
+            }else if(parseJwt(db.userInstance.idToken)['claim'] == 'ShopOwner'){
               return Shop();
             }else {
               return Customer();
