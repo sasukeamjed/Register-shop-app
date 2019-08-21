@@ -40,11 +40,10 @@ class Db with ChangeNotifier {
     @required String username,
     @required String email,
     @required String password,
-    @required int phoneNumber,
+    @required String phoneNumber,
     @required String firstName,
     @required String lastName,
     @required String address,
-    String shopName,
     String shopLocation,
   }) async {
     if (idToken != null) {
@@ -52,11 +51,11 @@ class Db with ChangeNotifier {
 
       SuperAdminManagement.addShopOwner(
           idToken: idToken,
-          shopName: null,
-          email: null,
-          password: null,
-          phoneNumber: null,
-          fullName: null);
+          shopName: username,
+          email: email,
+          password: password,
+          phoneNumber: phoneNumber,
+          fullName: firstName);
       //ToDo: store the results of fetchAllShopsOwners method into general variable
       SuperAdminManagement.fetchAllShopsOwners();
 

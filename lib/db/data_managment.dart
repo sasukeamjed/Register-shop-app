@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
@@ -6,7 +7,6 @@ import 'package:register_shop_app/constants/claims_types.dart';
 import 'package:register_shop_app/models/shop.dart';
 
 class SuperAdminManagement {
-
   static Future<void> addAdmin({
     @required ClaimsType claim,
     @required String email,
@@ -27,7 +27,20 @@ class SuperAdminManagement {
     @required String fullName,
     String displayName,
   }) {
-
+    CloudFunctions.instance.getHttpsCallable(functionName: "createUser").call({
+      "idToken": idToken,
+      "shopName": shopName,
+      "email": email,
+      "password": password,
+      "phoneNumber": phoneNumber,
+      "shopOwnerName":fullName,
+      "displayName": displayName,
+    }).then((res) async {
+      print('data_management.dart line 39: ${res.data}');
+      print('data_management.dart line 40: ${res.data['uid']}');
+    }).catchError((e) {
+      print('data_management.dart line 40: $e');
+    });
   }
 
   static void addCustomer({
@@ -51,9 +64,9 @@ class SuperAdminManagement {
 }
 
 class ShopsManagement {
-  static void addProduct(@required String idToken,) {
-
-  }
+  static void addProduct(
+    @required String idToken,
+  ) {}
 
   void deleteProduct() {}
 
@@ -61,4 +74,3 @@ class ShopsManagement {
 
   void fetchAllProducts() {}
 }
-

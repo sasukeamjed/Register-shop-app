@@ -17,6 +17,7 @@ const gcconfig = {
 };
 
 const gcs = admin.storage();
+const db = admin.firestore();
 
 
 
@@ -40,9 +41,9 @@ const gcs = admin.storage();
 exports.createUser = functions.https.onCall(async (data, context) => {
 
   if (data['idToken']) {
-    return addShopOwner(data['idToken'], data['shopName'], 'sasukeamjed@gmail.com', '123456', '95868408', '', '');
+    return addShopOwner(data['idToken'], data['shopName'], data['email'], data['password'], data['phoneNumber'], 'amjed', 'al anqoodi');
   } else {
-    return addCustomer('fish@fish.com', '123456', '95868400', 'fishsan', '', '', 'oman', 'nizwa', 'marfa daris');
+    return addCustomer('fish@fish.com', '123456', '95868400', 'fishsan', 'Amjed', '', 'oman', 'nizwa', 'marfa daris');
   }
 
 });
@@ -74,7 +75,7 @@ const addAdmin = async (
 
 };
 
-const addShopOwner = (
+const addShopOwner = async (
   idToken,
   shopName,
   email,
@@ -84,11 +85,19 @@ const addShopOwner = (
   lastNmae,
 ) => {
   var user;
+  var shopsCollection = db.collection('Shops');
 
-  return admin.auth().verifyIdToken(idToken).then((decodedToken) => {
+  return admin.auth().verifyIdToken(idToken).then(async (decodedToken) => {
     console.log(decodedToken);
 
     if (decodedToken.claim === 'Admin') {
+      console.log('checking claim');
+      let doc = await shopsCollection.doc(shopName).get();
+      console.log(doc.exists);
+
+      if(doc.exists){
+        throw Error('Shop Name already exist');
+      }
 
       return admin.auth().createUser({
         email: email,
@@ -96,12 +105,12 @@ const addShopOwner = (
         emailVerified: false,
         password: password,
         displayName: shopName,
-        photoURL: 'https://www.tenforums.com/geek/gars/images/2/types/thumb__ser.png',
+        photoURL: 'https://firebasestorage.googleapis.com/v0/b/fir-auth-test-a160f.appspot.com/o/default_shop_image.jpg?alt=media&token=70482119-01d4-4b38-b05c-f3c31be420fc',
         disabled: false
       });
 
     } else {
-      throw Error('Unauthrized 49');
+      throw Error('Unauthrized line 104');
     }
 
   }).then(async (newUser) => {
@@ -109,7 +118,13 @@ const addShopOwner = (
     await admin.auth().setCustomUserClaims(newUser.uid, { claim: 'ShopOwner' });
     user = newUser;
   }).then(() => {
-    console.log('user with ShopOwner claim was created!!! and hope it worked');
+    return shopsCollection.doc(shopName).set({
+      firstName,
+      lastNmae
+    });
+  
+  }).then((res)=>{
+    console.log('user with ShopOwner claim was created!!! hope it worked');
     return user;
   }).catch(e => e);
 

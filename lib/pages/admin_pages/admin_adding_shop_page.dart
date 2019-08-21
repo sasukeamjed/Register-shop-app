@@ -76,7 +76,7 @@ class AdminAddingShopPage extends StatelessWidget {
             RaisedButton(
               child: Text('Add a new Shop ?!'),
               onPressed: () async {
-                createShop(idToken: db.userInstance.idToken);
+                db.signUp(idToken: db.userInstance.idToken ,username: shopNameController.text, email: emailController.text, password: passwordController.text, phoneNumber: phoneController.text, firstName: null, lastName: null, address: null);
               },
             ),
             RaisedButton(
@@ -139,22 +139,6 @@ class AdminAddingShopPage extends StatelessWidget {
     }
   }
 
-  createShop({String idToken}) async {
-
-    CloudFunctions.instance.getHttpsCallable(functionName: "createUser").call({
-      "idToken" : idToken,
-      "shopName": 'test',
-      "email": 'sasukeamjed@gmail.com',
-      "password": '123456',
-      "phoneNumber": phoneController.text,
-      "imageFile": imageFile,
-    }).then((res) async {
-      print('Admin page line 143: ${res.data}');
-      print('Admin page line 144: ${res.data['uid']}');
-    }).catchError((e) {
-      print('Admin page line 155: $e');
-    });
-  }
 
 //  createShop({String idToken}) async {
 //
