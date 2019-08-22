@@ -39,7 +39,7 @@ const db = admin.firestore();
 // });
 
 exports.createUser = functions.https.onCall(async (data, context) => {
-
+  
   if (data['idToken']) {
     return addShopOwner(data['idToken'], data['shopName'], data['email'], data['password'], data['phoneNumber'], 'amjed', 'al anqoodi');
   } else {
@@ -87,17 +87,16 @@ const addShopOwner = async (
   var user;
   var shopsCollection = db.collection('Shops');
 
+
   return admin.auth().verifyIdToken(idToken).then(async (decodedToken) => {
     console.log(decodedToken);
-
+    throw new Error('502');
     if (decodedToken.claim === 'Admin') {
 
       let doc = await shopsCollection.doc(shopName).get();
 
-
       if (doc.exists) {
         console.log('Shop Name already exist');
-
         throw new Error('Shop Name already exist');
       }
 
@@ -129,7 +128,18 @@ const addShopOwner = async (
     console.log('user with ShopOwner claim was created!!! hope it worked');
     return user;
   }).catch(e => {
-    console.log(e);
+    console.log(e.message);
+    if(e.message === '501'){
+      return {
+        error: e.message,
+        message: 'this is a 501 error'
+      }
+    }else{
+      return {
+        error: e.message,
+        message: 'this is a normal error'
+      }
+    }
     return e;
   });
 
