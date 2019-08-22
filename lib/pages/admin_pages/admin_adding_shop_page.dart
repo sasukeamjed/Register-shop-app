@@ -76,6 +76,7 @@ class AdminAddingShopPage extends StatelessWidget {
             RaisedButton(
               child: Text('Add a new Shop ?!'),
               onPressed: () async {
+                //ToDo: do something if the function returned a null
                 db.signUp(idToken: db.userInstance.idToken ,username: shopNameController.text, email: emailController.text, password: passwordController.text, phoneNumber: phoneController.text, firstName: null, lastName: null, address: null);
               },
             ),

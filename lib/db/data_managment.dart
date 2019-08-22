@@ -39,7 +39,7 @@ class SuperAdminManagement {
       print('data_management.dart line 39: ${res.data}');
       print('data_management.dart line 40: ${res.data['uid']}');
     }).catchError((e) {
-      print('data_management.dart line 40: $e');
+      print('data_management.dart line 42: $e');
     });
   }
 

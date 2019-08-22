@@ -91,12 +91,14 @@ const addShopOwner = async (
     console.log(decodedToken);
 
     if (decodedToken.claim === 'Admin') {
-      console.log('checking claim');
-      let doc = await shopsCollection.doc(shopName).get();
-      console.log(doc.exists);
 
-      if(doc.exists){
-        throw Error('Shop Name already exist');
+      let doc = await shopsCollection.doc(shopName).get();
+
+
+      if (doc.exists) {
+        console.log('Shop Name already exist');
+
+        throw new Error('Shop Name already exist');
       }
 
       return admin.auth().createUser({
@@ -110,7 +112,7 @@ const addShopOwner = async (
       });
 
     } else {
-      throw Error('Unauthrized line 104');
+      throw new Error('Unauthrized line 104');
     }
 
   }).then(async (newUser) => {
@@ -122,11 +124,14 @@ const addShopOwner = async (
       firstName,
       lastNmae
     });
-  
-  }).then((res)=>{
+
+  }).then((res) => {
     console.log('user with ShopOwner claim was created!!! hope it worked');
     return user;
-  }).catch(e => e);
+  }).catch(e => {
+    console.log(e);
+    return e;
+  });
 
 
 };
