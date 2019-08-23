@@ -33,7 +33,7 @@ class SuperAdminManagement {
       "email": email,
       "password": password,
       "phoneNumber": phoneNumber,
-      "shopOwnerName":fullName,
+      "shopOwnerName": fullName,
       "displayName": displayName,
     }).then((res) async {
       print('data_management.dart line 39: ${res.data}');
@@ -58,8 +58,16 @@ class SuperAdminManagement {
 
   void deleteShopOwner() {}
 
-  static List<Shop> fetchAllShopsOwners() {
-    return [];
+  static fetchAllShopsOwners() {
+    return CloudFunctions.instance
+        .getHttpsCallable(functionName: 'getAllUsers')
+        .call()
+        .then((res) {
+      print('function getAllUsers is called');
+      print(res.data.toList());
+    }).catchError((e) {
+      print(e);
+    });
   }
 }
 

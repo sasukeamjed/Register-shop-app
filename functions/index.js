@@ -39,7 +39,7 @@ const db = admin.firestore();
 // });
 
 exports.createUser = functions.https.onCall(async (data, context) => {
-  
+
   if (data['idToken']) {
     return addShopOwner(data['idToken'], data['shopName'], data['email'], data['password'], data['phoneNumber'], 'amjed', 'al anqoodi');
   } else {
@@ -90,7 +90,7 @@ const addShopOwner = async (
 
   return admin.auth().verifyIdToken(idToken).then(async (decodedToken) => {
     console.log(decodedToken);
-    throw new Error('502');
+
     if (decodedToken.claim === 'Admin') {
 
       let doc = await shopsCollection.doc(shopName).get();
@@ -129,12 +129,12 @@ const addShopOwner = async (
     return user;
   }).catch(e => {
     console.log(e.message);
-    if(e.message === '501'){
+    if (e.message === '501') {
       return {
         error: e.message,
         message: 'this is a 501 error'
       }
-    }else{
+    } else {
       return {
         error: e.message,
         message: 'this is a normal error'
@@ -270,25 +270,29 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
 });
 
 
-exports.getAllUsers = functions.https.onCall((data, context) => {
+exports.getAllUsers = functions.https.onCall(async (data, context) => {
   function listAllUsers(nextPageToken) {
     // List batch of users, 1000 at a time.
     return admin.auth().listUsers(1000, nextPageToken)
       .then(function (listUsersResult) {
         listUsersResult.users.forEach(function (userRecord) {
-          console.log('user', userRecord.toJSON());
+          // console.log('user', userRecord.toJSON());
         });
         if (listUsersResult.pageToken) {
           // List next batch of users.
           listAllUsers(listUsersResult.pageToken);
         }
-        return listUsersResult.users;
+        return listUsersResult.users.filter(user => {
+          return user.customClaims.claim === 'ShopOwner'
+        });
       })
       .catch(function (error) {
         console.log('Error listing users:', error);
       });
   }
+  const allUsers = await listAllUsers();
   // Start listing users from the beginning, 1000 at a time.
+  console.log(allUsers);
   return listAllUsers();
 });
 

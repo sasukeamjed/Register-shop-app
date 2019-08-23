@@ -7,6 +7,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:provider/provider.dart';
+import 'package:register_shop_app/db/data_managment.dart';
 
 import 'package:register_shop_app/db/db_class.dart';
 import 'package:register_shop_app/widgets/image_picker_widget.dart';
@@ -83,7 +84,7 @@ class AdminAddingShopPage extends StatelessWidget {
             RaisedButton(
               child: Text('Get All User ?!'),
               onPressed: () async {
-                fetchAllUsers();
+                SuperAdminManagement.fetchAllShopsOwners();
               },
             ),
           ],
@@ -141,34 +142,6 @@ class AdminAddingShopPage extends StatelessWidget {
   }
 
 
-//  createShop({String idToken}) async {
-//
-//    CloudFunctions.instance.getHttpsCallable(functionName: "createUser").call({
-//      "idToken" : idToken,
-//      "email": emailController.text,
-//      "password": passwordController.text,
-//      "shopName": shopNameController.text,
-//      "phoneNumber": phoneController.text,
-//      "claim": "shop",
-//    }).then((res) async {
-//      print('Admin page line 143: ${res.data}');
-//      print('Admin page line 144: ${res.data['uid']}');
-//      if(res.data['uid'] == null){
-//        return throw(res.data);
-//      }else{
-////        return uploadImage(
-////            image: imageFile,
-////            shopName: shopNameController.text,
-////            idToken: idToken);
-//      }
-//    }).then((data){
-//      print('Admin page line 154: $data');
-////      return updatePhotoUrl(data['uid'], '');
-//    }).catchError((e) {
-//      print('Admin page line 157: $e');
-//    });
-//  }
-
   updatePhotoUrl(String uid,String photoUrl){
     return CloudFunctions.instance.getHttpsCallable(functionName: "updateData").call({
       "uid": uid,
@@ -190,17 +163,6 @@ class AdminAddingShopPage extends StatelessWidget {
     });
   }
 
-  fetchAllUsers() async {
-    return CloudFunctions.instance
-        .getHttpsCallable(functionName: 'getAllUsers')
-        .call()
-        .then((res) {
-      print('function getAllUsers is called');
-      print(res.data[4]);
-    }).catchError((e) {
-      print(e);
-    });
-  }
 
   addAdminRole(email, claim) async {
     CloudFunctions.instance
