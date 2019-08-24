@@ -140,7 +140,6 @@ const addShopOwner = async (
         message: 'this is a normal error'
       }
     }
-    return e;
   });
 
 

@@ -22,10 +22,5 @@ class Customer extends SuperAdmin {
     @required this.city,
     @required this.village,
     this.customerPhotoUrl
-  }) : super(
-          uid: uid,
-          email: email,
-          claimType: claimType,
-          phoneNumber: phoneNumber,
-        );
+  });
 }
