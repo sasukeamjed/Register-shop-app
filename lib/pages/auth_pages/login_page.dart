@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:register_shop_app/db/auth.dart';
 import 'package:register_shop_app/db/db_class.dart';
 
 
@@ -12,7 +13,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var db = Provider.of<Db>(context);
+    var auth = Provider.of<Auth>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Main App'),
@@ -41,10 +42,10 @@ class LoginPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  RaisedButton(
+                  auth.dataState ? CircularProgressIndicator() : RaisedButton(
                     child: Text('LogIn'),
                     onPressed: () async{
-                      await db.login(userController.text, passwordController.text);
+                      await auth.signIn(userController.text, passwordController.text);
                     },
                   ),
                   SizedBox(

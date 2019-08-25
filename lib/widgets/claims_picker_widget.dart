@@ -43,8 +43,8 @@ class _ClaimRadioButtonsState extends State<ClaimRadioButtons> {
               groupValue: _claimType,
               onChanged: (value){
                 registerClaim(value);
-                db.setClaim(value);
-                print(db.claim);
+//                db.setClaim(value);
+//                print(db.claim);
               },
             ),
             Text('Admin'),
@@ -57,8 +57,8 @@ class _ClaimRadioButtonsState extends State<ClaimRadioButtons> {
               groupValue: _claimType,
               onChanged: (value){
                 registerClaim(value);
-                db.setClaim(value);
-                print(db.claim);
+//                db.setClaim(value);
+//                print(db.claim);
               },
             ),
             Text('Shop'),
@@ -71,8 +71,8 @@ class _ClaimRadioButtonsState extends State<ClaimRadioButtons> {
               groupValue: _claimType,
               onChanged: (value){
                 registerClaim(value);
-                db.setClaim(value);
-                print(db.claim);
+//                db.setClaim(value);
+//                print(db.claim);
               },
             ),
             Text('Customer'),

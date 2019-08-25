@@ -1,13 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:register_shop_app/db/db_class.dart';
 
-class Auth{
+class Auth extends Db{
 
-  static Future<IdTokenResult> signIn(String email, String password){
-
+  Future<IdTokenResult> signIn(String email, String password){
+    setFetchingData(true);
     return FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password)
         .then((AuthResult result){
       return result.user.getIdToken();
     }).then((IdTokenResult idToken){
+      setFetchingData(false);
       return idToken;
     }).catchError((e){
       print(e);
@@ -28,7 +30,7 @@ class Auth{
 
   }
 
-  static Future<void> signOut(){
+  Future<void> signOut(){
     return FirebaseAuth.instance.signOut();
   }
 
