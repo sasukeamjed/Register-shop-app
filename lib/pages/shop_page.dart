@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'db/db_class.dart';
+import '../db/db_class.dart';
 
 class Shop extends StatelessWidget {
 

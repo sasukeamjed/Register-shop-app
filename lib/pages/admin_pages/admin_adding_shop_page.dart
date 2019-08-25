@@ -78,11 +78,11 @@ class AdminAddingShopPage extends StatelessWidget {
               child: Text('Add a new Shop ?!'),
               onPressed: () async {
                 //ToDo: do something if the function returned a null
-                db.signUp(idToken: db.userInstance.idToken ,username: shopNameController.text, email: emailController.text, password: passwordController.text, phoneNumber: phoneController.text, firstName: null, lastName: null, address: null);
+//                db.signUp(idToken: db.userInstance.idToken ,username: shopNameController.text, email: emailController.text, password: passwordController.text, phoneNumber: phoneController.text, firstName: null, lastName: null, address: null);
               },
             ),
             RaisedButton(
-              child: Text('Get All User ?!'),
+              child: Text('Get All Shops ?!'),
               onPressed: () async {
                 SuperAdminManagement.fetchAllShopsOwners();
               },
