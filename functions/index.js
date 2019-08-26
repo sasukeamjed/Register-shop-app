@@ -82,7 +82,7 @@ const addShopOwner = async (
   password,
   phoneNumber,
   firstName,
-  lastNmae,
+  lastName,
 ) => {
   var user;
   var shopsCollection = db.collection('Shops');
@@ -121,7 +121,7 @@ const addShopOwner = async (
   }).then(() => {
     return shopsCollection.doc(shopName).set({
       firstName,
-      lastNmae
+      lastName
     });
 
   }).then((res) => {

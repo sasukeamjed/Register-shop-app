@@ -35,6 +35,7 @@ class Auth extends Db{
   }
 
   static bool isTokenExpired(DateTime dateTime){
+    //ToDo: check token expire time
     DateTime now = DateTime.now();
     return dateTime.isBefore(now);
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:register_shop_app/db/auth.dart';
 import 'package:register_shop_app/pages/admin_pages/admin_main.dart';
 import 'package:register_shop_app/pages/auth_pages/auth_page.dart';
 import 'db/db_class.dart';
@@ -21,8 +22,8 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<Db>(
-          builder: (_) => Db(),
+        ChangeNotifierProvider<Auth>(
+          builder: (_) => Auth(),
         ),
         StreamProvider<FirebaseUser>.value(
           value: FirebaseAuth.instance.onAuthStateChanged,

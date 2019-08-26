@@ -33,7 +33,7 @@ class AdminAddingShopPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var db = Provider.of<Db>(context);
+
     return SingleChildScrollView(
       child: Center(
         child: Column(

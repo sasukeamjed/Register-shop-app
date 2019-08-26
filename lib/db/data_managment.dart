@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -73,7 +75,9 @@ class SuperAdminManagement {
 
 class ShopsManagement {
   static void addProduct(
-    @required String idToken,
+    @required String productName,
+      @required double productPrice,
+      @required List<File> productImages,
   ) {}
 
   void deleteProduct() {}
