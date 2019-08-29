@@ -22,7 +22,6 @@ class AuthPage extends StatelessWidget {
                 if(snapshot.connectionState == ConnectionState.waiting){
                   return CircularProgressIndicator();
                 }
-
                 if(idToken.data.claims['claim'] == 'Admin'){
                   return AdminMain();
                 }else if(idToken.data.claims['claim'] == 'ShopOwner'){
@@ -30,8 +29,8 @@ class AuthPage extends StatelessWidget {
                 }
                 return Customer();
               }
+              //ToDo: return a splash screen
               return CircularProgressIndicator();
-
             },
           );
         }else{

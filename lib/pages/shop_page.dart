@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:register_shop_app/db/auth.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import '../db/db_class.dart';
 
 class Shop extends StatefulWidget {
@@ -61,6 +63,27 @@ class _ShopState extends State<Shop> {
     });
   }
 
+  void uploadImages(List<Asset> assets){
+    print('Uploading Images');
+    assets.forEach((asset) async{
+      try{
+        ByteData byteData = await asset.requestOriginal();
+        List<int> imageData = byteData.buffer.asUint8List();
+        StorageReference ref = FirebaseStorage.instance.ref().child(asset.name);
+        StorageUploadTask uploadTask = ref.putData(imageData);
+
+        await uploadTask.onComplete;
+
+        print('Done Uploading Images');
+      }catch(e){
+        print('--------------Error while uploading------ ($e)');
+      }
+    });
+    setState(() {
+      images = List<Asset>();
+    });
+  }
+
   @override
   Widget build(BuildContext context){
     var auth = Provider.of<Auth>(context);
@@ -105,6 +128,10 @@ class _ShopState extends State<Shop> {
               ),
               Expanded(
                 child: buildGridView(),
+              ),
+              RaisedButton(
+                child: Text('Add The Product'),
+                onPressed: (){},
               ),
             ],
           ),
