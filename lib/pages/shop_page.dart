@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:register_shop_app/db/auth.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import '../db/db_class.dart';
+import 'package:register_shop_app/db/data_managment.dart';
+
 
 class Shop extends StatefulWidget {
 
@@ -16,6 +15,8 @@ class _ShopState extends State<Shop> {
 
   List<Asset> images = List<Asset>();
   String _error;
+  TextEditingController productNameController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
 
   @override
   void initState() {
@@ -63,27 +64,6 @@ class _ShopState extends State<Shop> {
     });
   }
 
-  void uploadImages(List<Asset> assets){
-    print('Uploading Images');
-    assets.forEach((asset) async{
-      try{
-        ByteData byteData = await asset.requestOriginal();
-        List<int> imageData = byteData.buffer.asUint8List();
-        StorageReference ref = FirebaseStorage.instance.ref().child(asset.name);
-        StorageUploadTask uploadTask = ref.putData(imageData);
-
-        await uploadTask.onComplete;
-
-        print('Done Uploading Images');
-      }catch(e){
-        print('--------------Error while uploading------ ($e)');
-      }
-    });
-    setState(() {
-      images = List<Asset>();
-    });
-  }
-
   @override
   Widget build(BuildContext context){
     var auth = Provider.of<Auth>(context);
@@ -112,11 +92,13 @@ class _ShopState extends State<Shop> {
             children: <Widget>[
               Text('Shop Owner Page'),
               TextField(
+                controller: productNameController,
                 decoration: InputDecoration(
                   hintText: 'Product Name'
                 ),
               ),
               TextField(
+                controller: priceController,
                 decoration: InputDecoration(
                   hintText: 'Product Price'
                 ),
@@ -131,7 +113,10 @@ class _ShopState extends State<Shop> {
               ),
               RaisedButton(
                 child: Text('Add The Product'),
-                onPressed: (){},
+                onPressed: () async{
+                  ShopsManagement shopsManagement = ShopsManagement();
+                  await shopsManagement.addProduct(shopName: 'fish', productName: productNameController.text, price: double.parse(priceController.text), assets: images);
+                },
               ),
             ],
           ),

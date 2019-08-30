@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 import 'package:register_shop_app/constants/claims_types.dart';
@@ -76,12 +78,38 @@ class SuperAdminManagement {
 }
 
 class ShopsManagement {
-  static Future<void> addProduct(@required Product product, @required String shopName) async{
+  Future<void> addProduct({@required String shopName, @required String productName, @required double price, @required List<Asset> assets}) async{
     //ToDo: 1- upload get the images urls
+    List<String> imagesUrls = await uploadImages(assets);
     //ToDo: 2- make a new product instance
     //ToDo: 3- add the product to cloud fire-store
     DocumentReference shopDocument = Firestore.instance.collection('Shops').document(shopName);
+    return shopDocument.setData({
+      'productName' : productName,
+      'price' : price,
+      'imagesUrls' : imagesUrls
+    });
+  }
 
+  Future<List<String>> uploadImages(List<Asset> assets) async{
+    print('Uploading Images');
+    List<String> urls = [];
+    await Future.forEach(assets, (asset) async {
+      try{
+        ByteData byteData = await asset.requestOriginal();
+        List<int> imageData = byteData.buffer.asUint8List();
+        StorageReference ref = FirebaseStorage.instance.ref().child(asset.name);
+        StorageUploadTask uploadTask = ref.putData(imageData);
+
+        String url = await (await uploadTask.onComplete).ref.getDownloadURL();
+        urls.add(url.toString());
+        print('Done Uploading Images');
+      }catch(e){
+        print('--------------Error while uploading------ ($e)');
+      }
+    });
+    print(urls);
+    return urls;
   }
 
   void deleteProduct() {}

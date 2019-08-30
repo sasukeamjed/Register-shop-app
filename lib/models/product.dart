@@ -13,12 +13,11 @@ class Product{
     return Product(productName: data['productName'], price: data['price'], images: data['imagesURLs']);
   }
 
-  Future<Map<String, dynamic>> toJson(String productName, double price, Future<List<String>> generateURLs()) async{
-    var imageUrls = await generateURLs();
+  Map<String, dynamic> toJson(String productName, double price, List<String> generatedUrls) {
     return {
       'productName' : productName,
       'price' : price,
-      'imageUrl' : imageUrls
+      'imageUrl' : generatedUrls,
     };
   }
 }
