@@ -1,24 +1,33 @@
-import 'package:register_shop_app/models/product.dart';
+import 'package:register_shop_app/constants/claims_types.dart';
 import 'package:flutter/foundation.dart';
+import 'package:register_shop_app/models/users/User.dart';
 
-class ShopOwner{
-  final String uid;
-  final String email;
-  final String idToken;
+class ShopOwner extends User{
+  final String shopName;
   final String phoneNumber;
-  final List<Product> products;
   final String shopOwnerFullName;
   final String ownerPhotoUrl;
-  final String shopName;
+  final ClaimsType claim;
 
-  ShopOwner(
-      {@required this.uid,
-        @required this.shopName,
-        @required this.email,
-        @required this.idToken,
-        @required this.products,
-        @required this.phoneNumber,
-        @required this.shopOwnerFullName,
-        this.ownerPhotoUrl,
-        });
+
+  ShopOwner({
+    @required String uid,
+    @required String email,
+    @required String token,
+    @required this.claim,
+    @required this.shopName,
+    @required this.phoneNumber,
+    @required this.shopOwnerFullName,
+    this.ownerPhotoUrl,
+  }): super(uid: uid, email: email, token: token);
+
+  factory ShopOwner.fromJson(Map<String, dynamic> data) {
+    return ShopOwner(
+        uid: data['uid'],
+        email: data['email'],
+        phoneNumber: data['phone_number'],
+        shopOwnerFullName: '',
+        ownerPhotoUrl: data['picture'],
+        shopName: data['name']);
+  }
 }

@@ -5,13 +5,13 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:register_shop_app/db/data_managment.dart';
 
 
-class Shop extends StatefulWidget {
+class AddProductPage extends StatefulWidget {
 
   @override
-  _ShopState createState() => _ShopState();
+  _AddProductPageState createState() => _AddProductPageState();
 }
 
-class _ShopState extends State<Shop> {
+class _AddProductPageState extends State<AddProductPage> {
 
   List<Asset> images = List<Asset>();
   String _error;
@@ -67,59 +67,40 @@ class _ShopState extends State<Shop> {
   @override
   Widget build(BuildContext context){
     var auth = Provider.of<Auth>(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Shop Page'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: (){
-
-            },
-          ),
-        ],
-        leading: IconButton(
-          icon: Icon(Icons.exit_to_app),
-          onPressed: () async {
-            await auth.signOut();
-          },
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Text('Shop Owner Page'),
-              TextField(
-                controller: productNameController,
-                decoration: InputDecoration(
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            Text('Shop Owner Page'),
+            TextField(
+              controller: productNameController,
+              decoration: InputDecoration(
                   hintText: 'Product Name'
-                ),
               ),
-              TextField(
-                controller: priceController,
-                decoration: InputDecoration(
+            ),
+            TextField(
+              controller: priceController,
+              decoration: InputDecoration(
                   hintText: 'Product Price'
-                ),
               ),
-              Center(child: Text('Error: $_error')),
-              RaisedButton(
-                child: Text("Pick images"),
-                onPressed: loadAssets,
-              ),
-              Expanded(
-                child: buildGridView(),
-              ),
-              RaisedButton(
-                child: Text('Add The Product'),
-                onPressed: () async{
-                  ShopsManagement shopsManagement = ShopsManagement();
-                  await shopsManagement.addProduct(shopName: 'fish', productName: productNameController.text, price: double.parse(priceController.text), assets: images);
-                },
-              ),
-            ],
-          ),
+            ),
+            Center(child: Text('Error: $_error')),
+            RaisedButton(
+              child: Text("Pick images"),
+              onPressed: loadAssets,
+            ),
+            Expanded(
+              child: buildGridView(),
+            ),
+            RaisedButton(
+              child: Text('Add The Product'),
+              onPressed: () async{
+                ShopsManagement shopsManagement = ShopsManagement();
+                await shopsManagement.addProduct(shopName: 'fish', productName: productNameController.text, price: double.parse(priceController.text), assets: images);
+              },
+            ),
+          ],
         ),
       ),
     );

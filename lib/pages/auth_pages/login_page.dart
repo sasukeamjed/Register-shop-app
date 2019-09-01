@@ -42,7 +42,7 @@ class LoginPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  auth.dataState ? CircularProgressIndicator() : RaisedButton(
+                  RaisedButton(
                     child: Text('LogIn'),
                     onPressed: () async{
                       await auth.signIn(userController.text, passwordController.text);
@@ -54,11 +54,12 @@ class LoginPage extends StatelessWidget {
                   RaisedButton(
                     child: Text('Sign Up'),
                     onPressed: () async {
-//                      await db.signUp(userController.text, passwordController.text);
+                      await auth.signUp(userController.text, passwordController.text);
                     },
                   ),
                 ],
               ),
+              auth.dataState ? CircularProgressIndicator() : Container(),
             ],
           ),
         ),

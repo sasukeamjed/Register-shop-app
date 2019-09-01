@@ -9,7 +9,7 @@ import 'db/db_class.dart';
 import 'package:register_shop_app/pages/admin_pages/admin_adding_shop_page.dart';
 import 'package:register_shop_app/pages/auth_pages/login_page.dart';
 import 'parse_jwt.dart';
-import 'pages/shop_page.dart';
+import 'pages/shop_owner_pages/add_product_page.dart';
 import 'package:register_shop_app/pages/customer_page.dart';
 
 //import 'models/user_model.dart';

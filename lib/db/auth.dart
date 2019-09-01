@@ -1,5 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:register_shop_app/constants/claims_types.dart';
 import 'package:register_shop_app/db/db_class.dart';
+import 'package:register_shop_app/models/users/User.dart';
+import 'package:register_shop_app/models/users/admin.dart';
+import 'package:register_shop_app/models/users/customer.dart';
+import 'package:register_shop_app/models/users/shop_owner.dart';
+
 
 class Auth extends Db{
 
@@ -9,6 +15,22 @@ class Auth extends Db{
         .then((AuthResult result){
       return result.user.getIdToken();
     }).then((IdTokenResult idToken){
+      createUser(idToken);
+      setFetchingData(false);
+      return idToken;
+    }).catchError((e){
+      print(e);
+    });
+  }
+
+
+  Future<IdTokenResult> signUp(String email, String password){
+    setFetchingData(true);
+    return FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password)
+    .then((AuthResult result){
+      return result.user.getIdToken();
+    }).then((IdTokenResult idToken){
+      createUser(idToken);
       setFetchingData(false);
       return idToken;
     }).catchError((e){
@@ -17,20 +39,8 @@ class Auth extends Db{
 
   }
 
-  static Future<IdTokenResult> signUp(String email, String password){
-
-    return FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password)
-    .then((AuthResult result){
-      return result.user.getIdToken();
-    }).then((IdTokenResult idToken){
-      return idToken;
-    }).catchError((e){
-      print(e);
-    });
-
-  }
-
   Future<void> signOut(){
+    setUser = null;
     return FirebaseAuth.instance.signOut();
   }
 
@@ -39,4 +49,29 @@ class Auth extends Db{
     DateTime now = DateTime.now();
     return dateTime.isBefore(now);
   }
+
+
+  void createUser(IdTokenResult idToken){
+
+    User user;
+
+    switch(idToken.claims['claim']){
+      case 'Admin':
+        user = Admin(uid: idToken.claims['user_id'], email: idToken.claims['email'], token: idToken.claims['token'], claim: ClaimsType.Admin, phoneNumber: idToken.claims['phone_number']);
+        break;
+      case 'ShopOwner':
+        user = ShopOwner(uid: idToken.claims['user_id'], email: idToken.claims['email'], token: idToken.claims['token'], claim: ClaimsType.ShopOwner, shopName: 'test', phoneNumber: idToken.claims['phone_number'], shopOwnerFullName: 'amjed al anqoodi');
+        break;
+      case 'Customer':
+        user = Customer(uid: idToken.claims['user_id'], email: idToken.claims['email'], token: idToken.claims['token'], claim: ClaimsType.Customer, phoneNumber: idToken.claims['phone_number'], userDisplayName: 'test', userRealName: 'amjed san', userFamilyName: 'al anqoodi', country: 'oman', city: 'nizwa', village: 'marfa daris');
+        break;
+      default:
+        user = null;
+        break;
+    }
+
+    setUser = user;
+//    print('auth.dart 75: ${user.email}');
+  }
+
 }
