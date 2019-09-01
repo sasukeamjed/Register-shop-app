@@ -79,10 +79,9 @@ class SuperAdminManagement {
 
 class ShopsManagement {
   Future<void> addProduct({@required String shopName, @required String productName, @required double price, @required List<Asset> assets}) async{
-    //ToDo: 1- upload get the images urls
+
     List<String> imagesUrls = await uploadImages(assets);
-    //ToDo: 2- make a new product instance
-    //ToDo: 3- add the product to cloud fire-store
+
     DocumentReference shopDocument = Firestore.instance.collection('Shops').document(shopName);
     return shopDocument.setData({
       'productName' : productName,

@@ -15,7 +15,7 @@ class Auth extends Db{
         .then((AuthResult result){
       return result.user.getIdToken();
     }).then((IdTokenResult idToken){
-      createUser(idToken);
+//      createUser(idToken);
       setFetchingData(false);
       return idToken;
     }).catchError((e){
@@ -30,7 +30,8 @@ class Auth extends Db{
     .then((AuthResult result){
       return result.user.getIdToken();
     }).then((IdTokenResult idToken){
-      createUser(idToken);
+//      print('auth_page 33: createUser method is called');
+//      createUser(idToken);
       setFetchingData(false);
       return idToken;
     }).catchError((e){
@@ -62,11 +63,8 @@ class Auth extends Db{
       case 'ShopOwner':
         user = ShopOwner(uid: idToken.claims['user_id'], email: idToken.claims['email'], token: idToken.claims['token'], claim: ClaimsType.ShopOwner, shopName: 'test', phoneNumber: idToken.claims['phone_number'], shopOwnerFullName: 'amjed al anqoodi');
         break;
-      case 'Customer':
-        user = Customer(uid: idToken.claims['user_id'], email: idToken.claims['email'], token: idToken.claims['token'], claim: ClaimsType.Customer, phoneNumber: idToken.claims['phone_number'], userDisplayName: 'test', userRealName: 'amjed san', userFamilyName: 'al anqoodi', country: 'oman', city: 'nizwa', village: 'marfa daris');
-        break;
       default:
-        user = null;
+        user = Customer(uid: idToken.claims['user_id'], email: idToken.claims['email'], token: idToken.claims['token'], phoneNumber: idToken.claims['phone_number'], userDisplayName: 'test', userRealName: 'amjed san', userFamilyName: 'al anqoodi', country: 'oman', city: 'nizwa', village: 'marfa daris');
         break;
     }
 

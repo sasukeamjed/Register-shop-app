@@ -1,10 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:register_shop_app/constants/claims_types.dart';
 import 'package:register_shop_app/models/users/User.dart';
-import 'package:register_shop_app/models/users/admin.dart';
+
 
 class Customer extends User {
-  final ClaimsType claim;
   final String phoneNumber;
   final String userDisplayName;
   final String userRealName;
@@ -18,7 +16,6 @@ class Customer extends User {
     @required String uid,
     @required String email,
     @required String token,
-    @required this.claim,
     @required this.phoneNumber,
     @required this.userDisplayName,
     @required this.userRealName,
