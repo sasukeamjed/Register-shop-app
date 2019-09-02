@@ -59,7 +59,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 ],
               ),
-              auth.dataState ? CircularProgressIndicator() : Container(),
+              auth.isFetching ? CircularProgressIndicator() : Container(),
             ],
           ),
         ),

@@ -43,7 +43,7 @@ exports.createUser = functions.https.onCall(async (data, context) => {
   if (data['idToken']) {
     return addShopOwner(data['idToken'], data['shopName'], data['email'], data['password'], data['phoneNumber'], 'amjed', 'al anqoodi');
   } else {
-    return addCustomer('fish@fish.com', '123456', '95868400', 'fishsan', 'Amjed', '', 'oman', 'nizwa', 'marfa daris');
+    return { error: 'index.js 46: UnAuthrized' };
   }
 
 });

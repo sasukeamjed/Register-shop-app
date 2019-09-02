@@ -20,7 +20,7 @@ class Db extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool get dataState{
+  bool get isFetching{
     return _fetchingData;
   }
 

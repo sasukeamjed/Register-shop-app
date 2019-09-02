@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 import 'package:register_shop_app/constants/claims_types.dart';
+import 'package:register_shop_app/db/db_class.dart';
 import 'package:register_shop_app/models/product.dart';
 import 'package:register_shop_app/models/shop.dart';
 
@@ -77,17 +78,29 @@ class SuperAdminManagement {
   }
 }
 
-class ShopsManagement {
-  Future<void> addProduct({@required String shopName, @required String productName, @required double price, @required List<Asset> assets}) async{
+class ShopsManagement extends Db {
+  Future<void> addProduct({@required ClaimsType claim, @required String shopName, @required String productName, @required double price, @required List<Asset> assets}) async{
 
-    List<String> imagesUrls = await uploadImages(assets);
+    if(claim != ClaimsType.ShopOwner) return null;
 
-    DocumentReference shopDocument = Firestore.instance.collection('Shops').document(shopName).collection('Products').document();
-    return shopDocument.setData({
-      'productName' : productName,
-      'price' : price,
-      'imagesUrls' : imagesUrls
-    });
+    setFetchingData(true);
+
+    try{
+      List<String> imagesUrls = await uploadImages(assets);
+
+      DocumentSnapshot shopDocument = await Firestore.instance.collection('Shops').document(shopName).get();
+      if(shopDocument.exists){
+        return shopDocument.reference.collection('Products').document().setData({
+          'productName' : productName,
+          'price' : price,
+          'imagesUrls' : imagesUrls
+        });
+      }
+      setFetchingData(false);
+    }catch(e){
+      print('data_managment.dart 95: $e');
+    }
+    setFetchingData(false);
   }
 
   Future<List<String>> uploadImages(List<Asset> assets) async{

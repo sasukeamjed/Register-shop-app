@@ -67,10 +67,12 @@ class Auth extends Db {
             email: idToken.claims['email'],
             token: idToken.claims['token'],
             claim: ClaimsType.ShopOwner,
-            shopName: 'test',
+            shopName: idToken.claims['displayName'],
             phoneNumber: idToken.claims['phone_number'],
-            shopOwnerFullName: 'amjed al anqoodi',
-        ownerPhotoUrl: idToken.claims['photoUrl']);
+            //ToDo: get first name and last
+            firstName: 'amjed',
+            lastName: 'al anqoodi',
+            ownerPhotoUrl: idToken.claims['photoUrl']);
         break;
       default:
         user = Customer(

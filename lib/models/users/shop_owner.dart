@@ -5,7 +5,8 @@ import 'package:register_shop_app/models/users/User.dart';
 class ShopOwner extends User{
   final String shopName;
   final String phoneNumber;
-  final String shopOwnerFullName;
+  final String firstName;
+  final String lastName;
   final String ownerPhotoUrl;
   final ClaimsType claim;
 
@@ -17,7 +18,8 @@ class ShopOwner extends User{
     @required this.claim,
     @required this.shopName,
     @required this.phoneNumber,
-    @required this.shopOwnerFullName,
+    @required this.firstName,
+    @required this.lastName,
     @required this.ownerPhotoUrl,
   }): super(uid: uid, email: email, token: token);
 
@@ -26,7 +28,8 @@ class ShopOwner extends User{
         uid: data['uid'],
         email: data['email'],
         phoneNumber: data['phone_number'],
-        shopOwnerFullName: '',
+        firstName: '',
+        lastName: '',
         ownerPhotoUrl: data['picture'],
         shopName: data['name']);
   }
