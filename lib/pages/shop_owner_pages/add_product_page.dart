@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:register_shop_app/db/auth.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:register_shop_app/db/data_managment.dart';
+import 'package:register_shop_app/models/users/shop_owner.dart';
 
 
 class AddProductPage extends StatefulWidget {
@@ -97,7 +98,7 @@ class _AddProductPageState extends State<AddProductPage> {
               child: Text('Add The Product'),
               onPressed: () async{
                 ShopsManagement shopsManagement = ShopsManagement();
-                await shopsManagement.addProduct(shopName: 'fish', productName: productNameController.text, price: double.parse(priceController.text), assets: images);
+                await shopsManagement.addProduct(shopName: (auth.getCurrentUser as ShopOwner).shopName , productName: productNameController.text, price: double.parse(priceController.text), assets: images);
               },
             ),
           ],

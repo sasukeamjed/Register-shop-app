@@ -18,7 +18,7 @@ class ShopOwner extends User{
     @required this.shopName,
     @required this.phoneNumber,
     @required this.shopOwnerFullName,
-    this.ownerPhotoUrl,
+    @required this.ownerPhotoUrl,
   }): super(uid: uid, email: email, token: token);
 
   factory ShopOwner.fromJson(Map<String, dynamic> data) {

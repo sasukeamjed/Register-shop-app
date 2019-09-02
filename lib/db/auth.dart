@@ -6,70 +6,88 @@ import 'package:register_shop_app/models/users/admin.dart';
 import 'package:register_shop_app/models/users/customer.dart';
 import 'package:register_shop_app/models/users/shop_owner.dart';
 
-
-class Auth extends Db{
-
-  Future<IdTokenResult> signIn(String email, String password){
+class Auth extends Db {
+  Future<IdTokenResult> signIn(String email, String password) {
     setFetchingData(true);
-    return FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password)
-        .then((AuthResult result){
+    return FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password)
+        .then((AuthResult result) {
       return result.user.getIdToken();
-    }).then((IdTokenResult idToken){
+    }).then((IdTokenResult idToken) {
 //      createUser(idToken);
       setFetchingData(false);
       return idToken;
-    }).catchError((e){
+    }).catchError((e) {
       print(e);
     });
   }
 
-
-  Future<IdTokenResult> signUp(String email, String password){
+  Future<IdTokenResult> signUp(String email, String password) {
     setFetchingData(true);
-    return FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password)
-    .then((AuthResult result){
+    return FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password)
+        .then((AuthResult result) {
       return result.user.getIdToken();
-    }).then((IdTokenResult idToken){
+    }).then((IdTokenResult idToken) {
 //      print('auth_page 33: createUser method is called');
 //      createUser(idToken);
       setFetchingData(false);
       return idToken;
-    }).catchError((e){
+    }).catchError((e) {
       print(e);
     });
-
   }
 
-  Future<void> signOut(){
+  Future<void> signOut() {
     setUser = null;
     return FirebaseAuth.instance.signOut();
   }
 
-  static bool isTokenExpired(DateTime dateTime){
+  static bool isTokenExpired(DateTime dateTime) {
     //ToDo: check token expire time
     DateTime now = DateTime.now();
     return dateTime.isBefore(now);
   }
 
-
-  void createUser(IdTokenResult idToken){
-
+  void createUser(IdTokenResult idToken) {
     User user;
 
-    switch(idToken.claims['claim']){
+    switch (idToken.claims['claim']) {
       case 'Admin':
-        user = Admin(uid: idToken.claims['user_id'], email: idToken.claims['email'], token: idToken.claims['token'], claim: ClaimsType.Admin, phoneNumber: idToken.claims['phone_number']);
+        user = Admin(
+            uid: idToken.claims['user_id'],
+            email: idToken.claims['email'],
+            token: idToken.claims['token'],
+            claim: ClaimsType.Admin,
+            phoneNumber: idToken.claims['phone_number']);
         break;
       case 'ShopOwner':
-        user = ShopOwner(uid: idToken.claims['user_id'], email: idToken.claims['email'], token: idToken.claims['token'], claim: ClaimsType.ShopOwner, shopName: 'test', phoneNumber: idToken.claims['phone_number'], shopOwnerFullName: 'amjed al anqoodi');
+        user = ShopOwner(
+            uid: idToken.claims['user_id'],
+            email: idToken.claims['email'],
+            token: idToken.claims['token'],
+            claim: ClaimsType.ShopOwner,
+            shopName: 'test',
+            phoneNumber: idToken.claims['phone_number'],
+            shopOwnerFullName: 'amjed al anqoodi',
+        ownerPhotoUrl: idToken.claims['photoUrl']);
         break;
       default:
-        user = Customer(uid: idToken.claims['user_id'], email: idToken.claims['email'], token: idToken.claims['token'], phoneNumber: idToken.claims['phone_number'], userDisplayName: 'test', userRealName: 'amjed san', userFamilyName: 'al anqoodi', country: 'oman', city: 'nizwa', village: 'marfa daris');
+        user = Customer(
+            uid: idToken.claims['user_id'],
+            email: idToken.claims['email'],
+            token: idToken.claims['token'],
+            phoneNumber: idToken.claims['phone_number'],
+            userDisplayName: 'test',
+            userRealName: 'amjed san',
+            userFamilyName: 'al anqoodi',
+            country: 'oman',
+            city: 'nizwa',
+            village: 'marfa daris');
         break;
     }
 
     setUser = user;
 //    print('auth.dart 75: ${user.email}');
   }
-
 }

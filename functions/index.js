@@ -120,6 +120,7 @@ const addShopOwner = async (
     user = newUser;
   }).then(() => {
     return shopsCollection.doc(shopName).set({
+      shopName,
       firstName,
       lastName
     });

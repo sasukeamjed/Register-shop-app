@@ -82,7 +82,7 @@ class ShopsManagement {
 
     List<String> imagesUrls = await uploadImages(assets);
 
-    DocumentReference shopDocument = Firestore.instance.collection('Shops').document(shopName);
+    DocumentReference shopDocument = Firestore.instance.collection('Shops').document(shopName).collection('Products').document();
     return shopDocument.setData({
       'productName' : productName,
       'price' : price,
