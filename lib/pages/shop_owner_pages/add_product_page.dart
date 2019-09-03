@@ -97,8 +97,10 @@ class _AddProductPageState extends State<AddProductPage> {
             RaisedButton(
               child: Text('Add The Product'),
               onPressed: () async{
-                ShopsManagement shopsManagement = ShopsManagement();
-                await shopsManagement.addProduct(claim: (auth.getCurrentUser as ShopOwner).claim, shopName: (auth.getCurrentUser as ShopOwner).shopName , productName: productNameController.text, price: double.parse(priceController.text), assets: images);
+                print('add_product 101: ${(auth.getCurrentUser as ShopOwner).claim}');
+                print('add_product 102: ${(auth.getCurrentUser as ShopOwner).shopName}');
+//                ShopsManagement shopsManagement = ShopsManagement();
+//                await shopsManagement.addProduct(claim: (auth.getCurrentUser as ShopOwner).claim, shopName: (auth.getCurrentUser as ShopOwner).shopName , productName: productNameController.text, price: double.parse(priceController.text), assets: images);
               },
             ),
           ],

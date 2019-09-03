@@ -67,12 +67,13 @@ class Auth extends Db {
             email: idToken.claims['email'],
             token: idToken.claims['token'],
             claim: ClaimsType.ShopOwner,
-            shopName: idToken.claims['displayName'],
+            shopName: idToken.claims['name'],
             phoneNumber: idToken.claims['phone_number'],
             //ToDo: get first name and last
             firstName: 'amjed',
             lastName: 'al anqoodi',
             ownerPhotoUrl: idToken.claims['photoUrl']);
+        print('auth.dart 76: ${(user as ShopOwner).claim}');
         break;
       default:
         user = Customer(

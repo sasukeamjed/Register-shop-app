@@ -20,11 +20,11 @@ class AuthPage extends StatelessWidget {
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
         if (snapshot.hasData) {
-          print('auth_page 23: $snapshot');
+//          print('auth_page 23: $snapshot');
           return FutureBuilder(
             future: snapshot.data.getIdToken(),
             builder: (BuildContext context, AsyncSnapshot<IdTokenResult> idToken) {
-//              print('auth_page 26: $idToken');
+              print('auth_page 26: $idToken');
 //              print('auth_page 27: ${idToken.connectionState}');
               if (idToken.connectionState == ConnectionState.waiting) {
                 return CircularProgressIndicator();
@@ -33,6 +33,7 @@ class AuthPage extends StatelessWidget {
                   auth.createUser(idToken.data);
                   return AdminMain();
                 } else if (idToken.data.claims['claim'] == 'ShopOwner') {
+                  print('auth_page.dart 36: ${idToken.data.claims['name']}');
                   auth.createUser(idToken.data);
                   return ShopOwnerMain();
                 }

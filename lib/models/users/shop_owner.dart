@@ -21,7 +21,7 @@ class ShopOwner extends User{
     @required this.firstName,
     @required this.lastName,
     @required this.ownerPhotoUrl,
-  }): super(uid: uid, email: email, token: token);
+  }):assert(uid != null && email != null && shopName != null, 'one of theses properties are null: shopName => $shopName, email => $email, uid => $uid') ,super(uid: uid, email: email, token: token);
 
   factory ShopOwner.fromJson(Map<String, dynamic> data) {
     return ShopOwner(
