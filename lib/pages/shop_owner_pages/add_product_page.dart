@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:register_shop_app/db/auth.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:register_shop_app/db/data_managment.dart';
+import 'package:register_shop_app/db/db_class.dart';
+import 'package:register_shop_app/db/db_class.dart';
 import 'package:register_shop_app/models/users/shop_owner.dart';
 
 
@@ -67,7 +69,7 @@ class _AddProductPageState extends State<AddProductPage> {
 
   @override
   Widget build(BuildContext context){
-    var auth = Provider.of<Auth>(context);
+    var db = Provider.of<Db>(context);
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Center(
@@ -97,8 +99,13 @@ class _AddProductPageState extends State<AddProductPage> {
             RaisedButton(
               child: Text('Add The Product'),
               onPressed: () async{
-                print('add_product 101: ${(auth.getCurrentUser as ShopOwner).claim}');
-                print('add_product 102: ${(auth.getCurrentUser as ShopOwner).shopName}');
+                if(db.getCurrentUser == null){
+                  print('add_product 103: user is null');
+                }else{
+                  print('add_product 105: user is not null');
+                }
+                print('add_product 107: ${db.getCurrentUser.email}');
+                print('add_product 108: ${(db.getCurrentUser as ShopOwner).shopName}');
 //                ShopsManagement shopsManagement = ShopsManagement();
 //                await shopsManagement.addProduct(claim: (auth.getCurrentUser as ShopOwner).claim, shopName: (auth.getCurrentUser as ShopOwner).shopName , productName: productNameController.text, price: double.parse(priceController.text), assets: images);
               },

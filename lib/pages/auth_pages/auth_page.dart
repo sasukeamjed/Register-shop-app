@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:register_shop_app/db/auth.dart';
 import 'package:register_shop_app/pages/admin_pages/admin_main.dart';
@@ -14,7 +15,7 @@ class AuthPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Auth auth = Auth();
+    var auth = Provider.of<Auth>(context);
 
     return StreamBuilder(
       stream: FirebaseAuth.instance.onAuthStateChanged,
@@ -24,7 +25,7 @@ class AuthPage extends StatelessWidget {
           return FutureBuilder(
             future: snapshot.data.getIdToken(),
             builder: (BuildContext context, AsyncSnapshot<IdTokenResult> idToken) {
-              print('auth_page 26: $idToken');
+//              print('auth_page 26: $idToken');
 //              print('auth_page 27: ${idToken.connectionState}');
               if (idToken.connectionState == ConnectionState.waiting) {
                 return CircularProgressIndicator();

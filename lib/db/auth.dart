@@ -50,11 +50,12 @@ class Auth extends Db {
   }
 
   void createUser(IdTokenResult idToken) {
+    print('auth.dart 53: creatUser method is called');
     User user;
 
     switch (idToken.claims['claim']) {
       case 'Admin':
-        user = Admin(
+        setUser = Admin(
             uid: idToken.claims['user_id'],
             email: idToken.claims['email'],
             token: idToken.claims['token'],
@@ -62,7 +63,7 @@ class Auth extends Db {
             phoneNumber: idToken.claims['phone_number']);
         break;
       case 'ShopOwner':
-        user = ShopOwner(
+        setUser = ShopOwner(
             uid: idToken.claims['user_id'],
             email: idToken.claims['email'],
             token: idToken.claims['token'],
@@ -73,10 +74,10 @@ class Auth extends Db {
             firstName: 'amjed',
             lastName: 'al anqoodi',
             ownerPhotoUrl: idToken.claims['photoUrl']);
-        print('auth.dart 76: ${(user as ShopOwner).claim}');
+
         break;
       default:
-        user = Customer(
+        setUser = Customer(
             uid: idToken.claims['user_id'],
             email: idToken.claims['email'],
             token: idToken.claims['token'],
@@ -89,8 +90,8 @@ class Auth extends Db {
             village: 'marfa daris');
         break;
     }
-
-    setUser = user;
+    print('auth.dart 94: ${getCurrentUser.email}');
 //    print('auth.dart 75: ${user.email}');
+
   }
 }

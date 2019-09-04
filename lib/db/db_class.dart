@@ -12,6 +12,7 @@ class Db extends ChangeNotifier {
   }
 
   set setUser(User user){
+    print('db_class.dart 15: Setting the user');
     _user = user;
   }
 
