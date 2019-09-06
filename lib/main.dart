@@ -25,9 +25,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<Auth>(
           builder: (_) => Auth(),
         ),
-        ChangeNotifierProvider<Db>(
-          builder: (_) => Db(),
-        ),
         StreamProvider<FirebaseUser>.value(
           value: FirebaseAuth.instance.onAuthStateChanged,
         ),

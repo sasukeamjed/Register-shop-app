@@ -52,7 +52,7 @@ class Auth extends Db {
   void createUser(IdTokenResult idToken) {
     print('auth.dart 53: creatUser method is called');
     User user;
-
+    setPrice();
     switch (idToken.claims['claim']) {
       case 'Admin':
         setUser = Admin(
@@ -94,4 +94,9 @@ class Auth extends Db {
 //    print('auth.dart 75: ${user.email}');
 
   }
+
+  void setPrice(){
+    price = 5.0;
+  }
+
 }

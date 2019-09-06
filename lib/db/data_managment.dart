@@ -32,8 +32,12 @@ class SuperAdminManagement {
     @required String password,
     @required String phoneNumber,
     @required String fullName,
-    String displayName,
   }) {
+
+    print('data_managment 37: $idToken');
+
+    assert(idToken != null && shopName != null && email != null && password != null, 'data_mangement 38: can not pass a null value');
+
     CloudFunctions.instance.getHttpsCallable(functionName: "createUser").call({
       "idToken": idToken,
       "shopName": shopName,
@@ -41,7 +45,6 @@ class SuperAdminManagement {
       "password": password,
       "phoneNumber": phoneNumber,
       "shopOwnerName": fullName,
-      "displayName": displayName,
     }).then((res) async {
       print('data_management.dart line 39: ${res.data}');
       print('data_management.dart line 40: ${res.data['uid']}');
@@ -79,14 +82,17 @@ class SuperAdminManagement {
 }
 
 class ShopsManagement extends Db {
-  Future<void> addProduct({@required ClaimsType claim, @required String shopName, @required String productName, @required double price, @required List<Asset> assets}) async{
 
+  Future<void> addProduct({@required ClaimsType claim, @required String shopName, @required String productName, @required double price, @required List<Asset> assets}) async{
+    assert(claim != null && shopName != null && productName != null && price != null, 'can not accept a null value');
     if(claim != ClaimsType.ShopOwner) return null;
+
+    print('data_manegment.dart 87: $productName');
 
     setFetchingData(true);
 
     try{
-      List<String> imagesUrls = await uploadImages(assets);
+      List<String> imagesUrls = await _uploadImages(assets);
 
       DocumentSnapshot shopDocument = await Firestore.instance.collection('Shops').document(shopName).get();
       if(shopDocument.exists){
@@ -103,7 +109,7 @@ class ShopsManagement extends Db {
     setFetchingData(false);
   }
 
-  Future<List<String>> uploadImages(List<Asset> assets) async{
+  Future<List<String>> _uploadImages(List<Asset> assets) async{
     print('Uploading Images');
     List<String> urls = [];
     await Future.forEach(assets, (asset) async {

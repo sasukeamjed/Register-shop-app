@@ -7,9 +7,11 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:provider/provider.dart';
+import 'package:register_shop_app/db/auth.dart';
 import 'package:register_shop_app/db/data_managment.dart';
 
 import 'package:register_shop_app/db/db_class.dart';
+import 'package:register_shop_app/models/users/shop_owner.dart';
 import 'package:register_shop_app/widgets/image_picker_widget.dart';
 
 import 'package:mime/mime.dart';
@@ -27,12 +29,14 @@ class AdminAddingShopPage extends StatelessWidget {
 
   final TextEditingController phoneController = TextEditingController();
 
-  final TextEditingController locationController = TextEditingController();
+  final TextEditingController fullNameController = TextEditingController();
 
   File imageFile;
 
   @override
   Widget build(BuildContext context) {
+
+    var auth = Provider.of<Auth>(context);
 
     return SingleChildScrollView(
       child: Center(
@@ -62,8 +66,8 @@ class AdminAddingShopPage extends StatelessWidget {
               decoration: InputDecoration(labelText: 'Phone Number'),
             ),
             TextField(
-              controller: locationController,
-              decoration: InputDecoration(labelText: 'location'),
+              controller: fullNameController,
+              decoration: InputDecoration(labelText: 'full name'),
             ),
             SizedBox(
               height: 10.0,
@@ -79,14 +83,15 @@ class AdminAddingShopPage extends StatelessWidget {
               onPressed: () async {
                 //ToDo: do something if the function returned a null
 //                db.signUp(idToken: db.userInstance.idToken ,username: shopNameController.text, email: emailController.text, password: passwordController.text, phoneNumber: phoneController.text, firstName: null, lastName: null, address: null);
+                SuperAdminManagement.addShopOwner(idToken: auth.getCurrentUser.token, shopName: shopNameController.text, email: emailController.text, password: passwordController.text, phoneNumber: phoneController.text, fullName: fullNameController.text);
               },
             ),
-            RaisedButton(
-              child: Text('Get All Shops ?!'),
-              onPressed: () async {
-                SuperAdminManagement.fetchAllShopsOwners();
-              },
-            ),
+//            RaisedButton(
+//              child: Text('Get All Shops ?!'),
+//              onPressed: () async {
+//                SuperAdminManagement.fetchAllShopsOwners();
+//              },
+//            ),
           ],
         ),
       ),

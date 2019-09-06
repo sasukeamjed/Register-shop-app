@@ -41,7 +41,7 @@ const db = admin.firestore();
 exports.createUser = functions.https.onCall(async (data, context) => {
 
   if (data['idToken']) {
-    return addShopOwner(data['idToken'], data['shopName'], data['email'], data['password'], data['phoneNumber'], 'amjed', 'al anqoodi');
+    return addShopOwner(data['idToken'], data['shopName'], data['email'], data['password'], data['phoneNumber'], data['shopOwnerName']);
   } else {
     return { error: 'index.js 46: UnAuthrized' };
   }
@@ -81,8 +81,7 @@ const addShopOwner = async (
   email,
   password,
   phoneNumber,
-  firstName,
-  lastName,
+  shopOwnerName,
 ) => {
   var user;
   var shopsCollection = db.collection('Shops');
@@ -121,8 +120,7 @@ const addShopOwner = async (
   }).then(() => {
     return shopsCollection.doc(shopName).set({
       shopName,
-      firstName,
-      lastName
+      shopOwnerName
     });
 
   }).then((res) => {

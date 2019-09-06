@@ -7,12 +7,9 @@ class Db extends ChangeNotifier {
   bool _fetchingData = false;
   User _user;
 
-  User get getCurrentUser{
-    return _user;
-  }
+  User get getCurrentUser => _user;
 
   set setUser(User user){
-    print('db_class.dart 15: Setting the user');
     _user = user;
   }
 
@@ -24,5 +21,8 @@ class Db extends ChangeNotifier {
   bool get isFetching{
     return _fetchingData;
   }
+
+  double price;
+
 
 }

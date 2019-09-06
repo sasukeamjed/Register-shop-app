@@ -69,7 +69,7 @@ class _AddProductPageState extends State<AddProductPage> {
 
   @override
   Widget build(BuildContext context){
-    var db = Provider.of<Db>(context);
+    var auth = Provider.of<Auth>(context);
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Center(
@@ -99,15 +99,9 @@ class _AddProductPageState extends State<AddProductPage> {
             RaisedButton(
               child: Text('Add The Product'),
               onPressed: () async{
-                if(db.getCurrentUser == null){
-                  print('add_product 103: user is null');
-                }else{
-                  print('add_product 105: user is not null');
-                }
-                print('add_product 107: ${db.getCurrentUser.email}');
-                print('add_product 108: ${(db.getCurrentUser as ShopOwner).shopName}');
-//                ShopsManagement shopsManagement = ShopsManagement();
-//                await shopsManagement.addProduct(claim: (auth.getCurrentUser as ShopOwner).claim, shopName: (auth.getCurrentUser as ShopOwner).shopName , productName: productNameController.text, price: double.parse(priceController.text), assets: images);
+
+                ShopsManagement shopsManagement = ShopsManagement();
+                await shopsManagement.addProduct(claim: (auth.getCurrentUser as ShopOwner).claim, shopName: (auth.getCurrentUser as ShopOwner).shopName , productName: productNameController.text, price: 33.0, assets: images);
               },
             ),
           ],
