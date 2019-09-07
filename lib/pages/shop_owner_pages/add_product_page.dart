@@ -7,15 +7,12 @@ import 'package:register_shop_app/db/db_class.dart';
 import 'package:register_shop_app/db/db_class.dart';
 import 'package:register_shop_app/models/users/shop_owner.dart';
 
-
 class AddProductPage extends StatefulWidget {
-
   @override
   _AddProductPageState createState() => _AddProductPageState();
 }
 
 class _AddProductPageState extends State<AddProductPage> {
-
   List<Asset> images = List<Asset>();
   String _error;
   TextEditingController productNameController = TextEditingController();
@@ -68,7 +65,7 @@ class _AddProductPageState extends State<AddProductPage> {
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     var auth = Provider.of<Auth>(context);
     return Padding(
       padding: const EdgeInsets.all(15.0),
@@ -78,15 +75,11 @@ class _AddProductPageState extends State<AddProductPage> {
             Text('Shop Owner Page'),
             TextField(
               controller: productNameController,
-              decoration: InputDecoration(
-                  hintText: 'Product Name'
-              ),
+              decoration: InputDecoration(hintText: 'Product Name'),
             ),
             TextField(
               controller: priceController,
-              decoration: InputDecoration(
-                  hintText: 'Product Price'
-              ),
+              decoration: InputDecoration(hintText: 'Product Price'),
             ),
             Center(child: Text('Error: $_error')),
             RaisedButton(
@@ -98,10 +91,14 @@ class _AddProductPageState extends State<AddProductPage> {
             ),
             RaisedButton(
               child: Text('Add The Product'),
-              onPressed: () async{
-
+              onPressed: () async {
                 ShopsManagement shopsManagement = ShopsManagement();
-                await shopsManagement.addProduct(claim: (auth.getCurrentUser as ShopOwner).claim, shopName: (auth.getCurrentUser as ShopOwner).shopName , productName: productNameController.text, price: 33.0, assets: images);
+                await shopsManagement.addProduct(
+                    claim: (auth.getCurrentUser as ShopOwner).claim,
+                    shopName: (auth.getCurrentUser as ShopOwner).shopName,
+                    productName: productNameController.text,
+                    price: double.parse(priceController.text),
+                    assets: images);
               },
             ),
           ],

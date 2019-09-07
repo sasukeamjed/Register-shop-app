@@ -11,6 +11,7 @@ import 'package:register_shop_app/db/auth.dart';
 import 'package:register_shop_app/db/data_managment.dart';
 
 import 'package:register_shop_app/db/db_class.dart';
+import 'package:register_shop_app/models/users/admin.dart';
 import 'package:register_shop_app/models/users/shop_owner.dart';
 import 'package:register_shop_app/widgets/image_picker_widget.dart';
 
@@ -61,7 +62,6 @@ class AdminAddingShopPage extends StatelessWidget {
               decoration: InputDecoration(labelText: 'Password'),
             ),
             TextField(
-              //ToDo: add +968 before the number
               controller: phoneController,
               decoration: InputDecoration(labelText: 'Phone Number'),
             ),
@@ -82,6 +82,7 @@ class AdminAddingShopPage extends StatelessWidget {
               child: Text('Add a new Shop ?!'),
               onPressed: () async {
                 //ToDo: do something if the function returned a null
+//                print(auth.getCurrentUser.token);
 //                db.signUp(idToken: db.userInstance.idToken ,username: shopNameController.text, email: emailController.text, password: passwordController.text, phoneNumber: phoneController.text, firstName: null, lastName: null, address: null);
                 SuperAdminManagement.addShopOwner(idToken: auth.getCurrentUser.token, shopName: shopNameController.text, email: emailController.text, password: passwordController.text, phoneNumber: phoneController.text, fullName: fullNameController.text);
               },

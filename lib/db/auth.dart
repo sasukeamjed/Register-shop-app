@@ -58,7 +58,7 @@ class Auth extends Db {
         setUser = Admin(
             uid: idToken.claims['user_id'],
             email: idToken.claims['email'],
-            token: idToken.claims['token'],
+            token: idToken.token,
             claim: ClaimsType.Admin,
             phoneNumber: idToken.claims['phone_number']);
         break;
@@ -66,7 +66,7 @@ class Auth extends Db {
         setUser = ShopOwner(
             uid: idToken.claims['user_id'],
             email: idToken.claims['email'],
-            token: idToken.claims['token'],
+            token: idToken.token,
             claim: ClaimsType.ShopOwner,
             shopName: idToken.claims['name'],
             phoneNumber: idToken.claims['phone_number'],
@@ -80,7 +80,7 @@ class Auth extends Db {
         setUser = Customer(
             uid: idToken.claims['user_id'],
             email: idToken.claims['email'],
-            token: idToken.claims['token'],
+            token: idToken.token,
             phoneNumber: idToken.claims['phone_number'],
             userDisplayName: 'test',
             userRealName: 'amjed san',
@@ -90,7 +90,7 @@ class Auth extends Db {
             village: 'marfa daris');
         break;
     }
-    print('auth.dart 94: ${getCurrentUser.email}');
+    print('auth.dart 93: ${getCurrentUser.email}');
 //    print('auth.dart 75: ${user.email}');
 
   }

@@ -25,7 +25,7 @@ class AuthPage extends StatelessWidget {
           return FutureBuilder(
             future: snapshot.data.getIdToken(),
             builder: (BuildContext context, AsyncSnapshot<IdTokenResult> idToken) {
-//              print('auth_page 26: $idToken');
+//              print('auth_page 28: ${idToken.data.token}');
 //              print('auth_page 27: ${idToken.connectionState}');
               if (idToken.connectionState == ConnectionState.waiting) {
                 return CircularProgressIndicator();
