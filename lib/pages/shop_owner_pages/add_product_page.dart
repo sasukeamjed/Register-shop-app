@@ -89,16 +89,19 @@ class _AddProductPageState extends State<AddProductPage> {
             Expanded(
               child: buildGridView(),
             ),
+            auth.isFetching ? CircularProgressIndicator() : Container(),
             RaisedButton(
               child: Text('Add The Product'),
               onPressed: () async {
                 ShopsManagement shopsManagement = ShopsManagement();
+                auth.setFetchingData(true);
                 await shopsManagement.addProduct(
                     claim: (auth.getCurrentUser as ShopOwner).claim,
                     shopName: (auth.getCurrentUser as ShopOwner).shopName,
                     productName: productNameController.text,
                     price: double.parse(priceController.text),
                     assets: images);
+                auth.setFetchingData(false);
               },
             ),
           ],
