@@ -15,8 +15,8 @@ class AuthPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var auth = Provider.of<Auth>(context);
-
+    var auth = Provider.of<Auth>(context, listen: false);
+    print('auth_page 19: authpage builder has launched');
     return StreamBuilder(
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {

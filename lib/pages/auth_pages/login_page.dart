@@ -13,7 +13,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var auth = Provider.of<Auth>(context);
+    var auth = Provider.of<Auth>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text('Main App'),
@@ -59,7 +59,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 ],
               ),
-              auth.isFetching ? CircularProgressIndicator() : Container(),
+              Loader(),
             ],
           ),
         ),
@@ -67,7 +67,13 @@ class LoginPage extends StatelessWidget {
     );
   }
 
+}
 
+class Loader extends StatelessWidget {
 
-
+  @override
+  Widget build(BuildContext context) {
+    var auth = Provider.of<Auth>(context);
+    return auth.isFetching ? CircularProgressIndicator() : Container();
+  }
 }
