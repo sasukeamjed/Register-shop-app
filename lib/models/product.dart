@@ -10,7 +10,7 @@ class Product{
   Product({@required this.productName, @required this.price, @required this.images});
 
   factory Product.fromJson(Map<String, dynamic> data){
-    return Product(productName: data['productName'], price: data['price'], images: data['imagesURLs']);
+    return Product(productName: data['productName'], price: data['price'], images: data['imagesUrls']);
   }
 
   Map<String, dynamic> toJson(String productName, double price, List<String> generatedUrls) {

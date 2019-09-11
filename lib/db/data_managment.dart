@@ -12,6 +12,7 @@ import 'package:register_shop_app/constants/claims_types.dart';
 import 'package:register_shop_app/db/db_class.dart';
 import 'package:register_shop_app/models/product.dart';
 import 'package:register_shop_app/models/shop.dart';
+import 'package:register_shop_app/models/users/shop_owner.dart';
 
 class SuperAdminManagement {
   static Future<void> addAdmin({
@@ -134,5 +135,23 @@ class ShopsManagement extends Db {
 
   void deleteProducts() {}
 
-  void fetchAllProducts() {}
+  Future<List<Product>> fetchAllProducts(ShopOwner shopOwner) async{
+    setFetchingData(true);
+    List<Product> products = [];
+
+    var data = await Firestore.instance
+        .collection('Shops')
+        .document(shopOwner.shopName)
+        .collection('Products').getDocuments();
+
+    List<DocumentSnapshot> docs = data.documents;
+
+    for( var i = 0 ; i < docs.length; i++ ) {
+
+      products.add(Product.fromJson(docs[i].data));
+
+    }
+    setFetchingData(false);
+    return products;
+  }
 }

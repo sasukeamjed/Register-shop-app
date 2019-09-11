@@ -16,7 +16,7 @@ class AuthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var auth = Provider.of<Auth>(context, listen: false);
-    print('auth_page 19: authpage builder has launched');
+
     return StreamBuilder(
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
@@ -34,7 +34,7 @@ class AuthPage extends StatelessWidget {
                   auth.createUser(idToken.data);
                   return AdminMain();
                 } else if (idToken.data.claims['claim'] == 'ShopOwner') {
-                  print('auth_page.dart 36: ${idToken.data.claims['name']}');
+
                   auth.createUser(idToken.data);
                   return ShopOwnerMain();
                 }
