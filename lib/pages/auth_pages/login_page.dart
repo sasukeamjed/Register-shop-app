@@ -22,46 +22,54 @@ class LoginPage extends StatelessWidget {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextField(
-                controller: userController,
-                decoration: InputDecoration(
-                    labelText: 'UserName'
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextField(
+                  controller: userController,
+                  decoration: InputDecoration(
+                      labelText: 'UserName'
+                  ),
                 ),
-              ),
-              TextField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                    labelText: 'Password'
+                TextField(
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                      labelText: 'Password'
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  RaisedButton(
-                    child: Text('LogIn'),
-                    onPressed: () async{
-                      await auth.signIn(userController.text, passwordController.text);
-                    },
-                  ),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  RaisedButton(
-                    child: Text('Sign Up'),
-                    onPressed: () async {
-                      await auth.signUp(userController.text, passwordController.text);
-                    },
-                  ),
-                ],
-              ),
-              Loader(),
-            ],
+                SizedBox(
+                  height: 10.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    RaisedButton(
+                      child: Text('LogIn'),
+                      onPressed: () async{
+                        //To Dismiss the keyboard after clicking
+                        FocusScope.of(context).requestFocus(new FocusNode());
+
+                        await auth.signIn(userController.text, passwordController.text);
+                      },
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    RaisedButton(
+                      child: Text('Sign Up'),
+                      onPressed: () async {
+                        //To Dismiss the keyboard after clicking
+                        FocusScope.of(context).requestFocus(new FocusNode());
+
+                        await auth.signUp(userController.text, passwordController.text);
+                      },
+                    ),
+                  ],
+                ),
+                Loader(),
+              ],
+            ),
           ),
         ),
       ),

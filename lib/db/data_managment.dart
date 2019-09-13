@@ -110,6 +110,10 @@ class ShopsManagement extends Db {
     setFetchingData(false);
   }
 
+  Future<void> updateProduct(){
+
+  }
+
   Future<List<String>> _uploadImages(List<Asset> assets) async{
     print('Uploading Images');
     List<String> urls = [];
@@ -145,11 +149,10 @@ class ShopsManagement extends Db {
         .collection('Products').getDocuments();
 
     List<DocumentSnapshot> docs = data.documents;
-
+    print(docs[0].data);
     for( var i = 0 ; i < docs.length; i++ ) {
-
-      products.add(Product.fromJson(docs[i].data));
-
+      String productId = docs[i].documentID;
+      products.add(Product.fromJson(productId: productId, data: docs[i].data));
     }
     setFetchingData(false);
     return products;
