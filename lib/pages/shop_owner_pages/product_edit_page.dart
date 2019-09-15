@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:register_shop_app/constants/dimensions.dart';
@@ -42,23 +43,27 @@ class _ProductEditPageState extends State<ProductEditPage> {
           padding: const EdgeInsets.all(8.0),
           child: Stack(
             children: <Widget>[
-              Image.network(
-                widget.product.images[index],
-                height: Dimensions.editPageProductHeight,
-                width: Dimensions.editPageProductWidth,
+              CachedNetworkImage(
+                imageUrl: widget.product.images[index],
+                placeholder: (context, url)=> Center(child: CircularProgressIndicator(),),
+                errorWidget: (context,url,error) => Center(child: new Icon(Icons.error)),
               ),
               Align(
                 alignment: Alignment.topLeft,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.camera, size: screenHeight * 0.05,),
-                      onPressed: () {},
+                    GestureDetector(
+                      child: Icon(Icons.camera),
+                      onTap: () {
+                        print('choose photo from library');
+                      },
                     ),
-                    IconButton(
-                      icon: Icon(Icons.camera_alt, size: screenWidth * 0.1,),
-                      onPressed: () {},
+                    GestureDetector(
+                      child: Icon(Icons.camera_alt),
+                      onTap: () {
+                        print('Choose photo from camera');
+                      },
                     ),
                   ],
                 ),
@@ -131,7 +136,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               ),
               auth.isFetching ? CircularProgressIndicator() : Container(),
               RaisedButton(
-                child: Text('Add The Product'),
+                child: Text('Update Product'),
                 onPressed: () async {
                   ShopsManagement shopsManagement = ShopsManagement();
                   auth.setFetchingData(true);
