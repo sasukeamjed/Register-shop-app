@@ -27,10 +27,17 @@ class _ProductEditPageState extends State<ProductEditPage> {
   double screenHeight;
   double screenWidth;
 
+  Product orginalProduct;
+  Product orginalProductCopy;
+
   @override
   void initState() {
     productNameController.text = widget.product.productName;
     priceController.text = widget.product.price.toString();
+
+    orginalProduct = widget.product;
+    orginalProductCopy = orginalProduct;
+    print('product_edit_page 40: ${orginalProduct == orginalProductCopy}');
 
     super.initState();
   }
@@ -121,6 +128,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
               TextField(
                 controller: productNameController,
                 decoration: InputDecoration(hintText: 'Product Name'),
+                onChanged: (input){
+                  setState(() {
+                    orginalProductCopy.productName = input;
+                  });
+                },
               ),
               TextField(
                 controller: priceController,
@@ -137,17 +149,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               auth.isFetching ? CircularProgressIndicator() : Container(),
               RaisedButton(
                 child: Text('Update Product'),
-                onPressed: () async {
-                  ShopsManagement shopsManagement = ShopsManagement();
-                  auth.setFetchingData(true);
-                  await shopsManagement.addProduct(
-                      claim: (auth.getCurrentUser as ShopOwner).claim,
-                      shopName: (auth.getCurrentUser as ShopOwner).shopName,
-                      productName: productNameController.text,
-                      price: double.parse(priceController.text),
-                      assets: images);
-                  auth.setFetchingData(false);
-                },
+                onPressed: orginalProduct == orginalProductCopy ? null : (){},
               ),
             ],
           ),

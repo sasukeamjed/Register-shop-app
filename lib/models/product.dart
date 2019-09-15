@@ -1,8 +1,8 @@
-import 'dart:io';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-class Product{
+class Product extends Equatable{
   final String productId;
   final String productName;
   final double price;
