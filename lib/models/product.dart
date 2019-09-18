@@ -14,6 +14,10 @@ class Product extends Equatable{
     return Product(productId: productId,productName: data['productName'], price: data['price'], images: data['imagesUrls']);
   }
 
+  set setProductName(String productName){
+    productName = productName;
+  }
+
   Map<String, dynamic> toJson(String productName, double price, List<String> generatedUrls) {
     return {
       'productName' : productName,

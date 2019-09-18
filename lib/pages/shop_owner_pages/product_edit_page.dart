@@ -27,58 +27,70 @@ class _ProductEditPageState extends State<ProductEditPage> {
   double screenHeight;
   double screenWidth;
 
-  Product orginalProduct;
-  Product orginalProductCopy;
+  String productName;
+  double productPrice;
+
 
   @override
   void initState() {
     productNameController.text = widget.product.productName;
     priceController.text = widget.product.price.toString();
 
-    orginalProduct = widget.product;
-    orginalProductCopy = orginalProduct;
-    print('product_edit_page 40: ${orginalProduct == orginalProductCopy}');
-
+    productName = widget.product.productName;
+    productPrice = widget.product.price;
     super.initState();
   }
 
   Widget buildGridView() {
-    return GridView.count(
-      crossAxisCount: 2,
-      children: List.generate(widget.product.images.length, (index) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Stack(
-            children: <Widget>[
-              CachedNetworkImage(
-                imageUrl: widget.product.images[index],
-                placeholder: (context, url)=> Center(child: CircularProgressIndicator(),),
-                errorWidget: (context,url,error) => Center(child: new Icon(Icons.error)),
-              ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    GestureDetector(
-                      child: Icon(Icons.camera),
-                      onTap: () {
-                        print('choose photo from library');
-                      },
+    return Center(
+      child: Center(
+        child: GridView.count(
+          crossAxisCount: 2,
+          children: List.generate(widget.product.images.length, (index) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Stack(
+                children: <Widget>[
+                  Center(
+                    child: CachedNetworkImage(
+                      imageUrl: widget.product.images[index],
+                      fit: BoxFit.fill,
+                      placeholder: (context, url) => Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          Center(child: new Icon(Icons.error)),
                     ),
-                    GestureDetector(
-                      child: Icon(Icons.camera_alt),
-                      onTap: () {
-                        print('Choose photo from camera');
-                      },
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        GestureDetector(
+                          child: Icon(Icons.camera),
+                          onTap: () {
+                            print('choose photo from library');
+                          },
+                        ),
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                        GestureDetector(
+                          child: Icon(Icons.camera_alt),
+                          onTap: () {
+                            print('Choose photo from camera');
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
-      }),
+            );
+          }),
+        ),
+      ),
     );
   }
 
@@ -109,8 +121,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
+    Product orginalProductCopy;
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
 
@@ -128,15 +143,21 @@ class _ProductEditPageState extends State<ProductEditPage> {
               TextField(
                 controller: productNameController,
                 decoration: InputDecoration(hintText: 'Product Name'),
-                onChanged: (input){
+                onChanged: (productNameValue) {
                   setState(() {
-                    orginalProductCopy.productName = input;
+                    productName = productNameValue.trim();
                   });
+
                 },
               ),
               TextField(
                 controller: priceController,
                 decoration: InputDecoration(hintText: 'Product Price'),
+                onChanged: (priceValue){
+                  setState(() {
+                    productPrice = priceValue.isEmpty ? 0 : double.parse(priceValue);
+                  });
+                },
               ),
               Center(child: Text('Error: $_error')),
               RaisedButton(
@@ -149,7 +170,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               auth.isFetching ? CircularProgressIndicator() : Container(),
               RaisedButton(
                 child: Text('Update Product'),
-                onPressed: orginalProduct == orginalProductCopy ? null : (){},
+                onPressed: productName == widget.product.productName && productPrice == widget.product.price ? null : () {},
               ),
             ],
           ),
