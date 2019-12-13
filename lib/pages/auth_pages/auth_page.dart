@@ -20,21 +20,22 @@ class AuthPage extends StatelessWidget {
     return StreamBuilder(
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
-        if (snapshot.hasData) {
-//          print('auth_page 23: $snapshot');
-          return FutureBuilder(
-            future: snapshot.data.getIdToken(),
-            builder: (BuildContext context, AsyncSnapshot<IdTokenResult> idToken) {
+
+        if(snapshot.connectionState == ConnectionState.active){
+          if(snapshot.hasData){
+            return FutureBuilder(
+              future: snapshot.data.getIdToken(),
+              builder: (BuildContext context, AsyncSnapshot<IdTokenResult> idToken) {
 //              print('auth_page 28: ${idToken.data.token}');
 //              print('auth_page 27: ${idToken.connectionState}');
-              if (idToken.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
+                if (idToken.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
                 if (idToken.data.claims['claim'] == 'Admin') {
                   auth.createUser(idToken.data);
                   return AdminMain();
                 } else if (idToken.data.claims['claim'] == 'ShopOwner') {
-
+                  print('AuthPage 37: page was recreated');
                   auth.createUser(idToken.data);
                   return ShopOwnerMain();
                 }
@@ -42,11 +43,60 @@ class AuthPage extends StatelessWidget {
 //                print('auth_page 36: createUser method is called');
                 return Customer();
 
-            },
-          );
-        } else {
-          return LoginPage();
+              },
+            );
+          }
+          else{
+            return LoginPage();
+          }
         }
+        else{
+          return Scaffold(
+            body: Center(child: CircularProgressIndicator(),),
+          );
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        if (snapshot.hasData) {
+//          print('auth_page 24: ${snapshot.data}');
+//          return FutureBuilder(
+//            future: snapshot.data.getIdToken(),
+//            builder: (BuildContext context, AsyncSnapshot<IdTokenResult> idToken) {
+////              print('auth_page 28: ${idToken.data.token}');
+////              print('auth_page 27: ${idToken.connectionState}');
+//              if (idToken.connectionState == ConnectionState.waiting) {
+//                return CircularProgressIndicator();
+//              }
+//                if (idToken.data.claims['claim'] == 'Admin') {
+//                  auth.createUser(idToken.data);
+//                  return AdminMain();
+//                } else if (idToken.data.claims['claim'] == 'ShopOwner') {
+//                  print('AuthPage 37: page was recreated');
+//                  auth.createUser(idToken.data);
+//                  return ShopOwnerMain();
+//                }
+//                auth.createUser(idToken.data);
+////                print('auth_page 36: createUser method is called');
+//                return Customer();
+//
+//            },
+//          );
+//        } else {
+//          return LoginPage();
+//        }
       },
     );
   }

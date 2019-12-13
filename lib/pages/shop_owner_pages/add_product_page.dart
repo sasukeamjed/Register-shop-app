@@ -104,8 +104,29 @@ class _AddProductPageState extends State<AddProductPage> {
                 auth.setFetchingData(false);
               },
             ),
+            RaisedButton(
+              child: Text('GO'),
+              onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> TestPage()));
+              },
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class TestPage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Test'),
+      ),
+      body: Center(
+        child: Text('Test Page'),
       ),
     );
   }
