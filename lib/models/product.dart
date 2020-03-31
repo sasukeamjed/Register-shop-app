@@ -25,4 +25,8 @@ class Product extends Equatable{
       'imageUrl' : generatedUrls,
     };
   }
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
 }
