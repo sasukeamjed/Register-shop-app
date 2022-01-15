@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "firebase-functions-test": "^0.1.6",
-    "marked": "^0.7.0",
+    "marked": "^4.0.10",
     "marked-terminal": "^3.2.0"
   },
   "peerDependencies": {},
